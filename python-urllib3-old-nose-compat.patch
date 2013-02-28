@@ -1,0 +1,10 @@
+Index: urllib3-1.5/setup.cfg
+===================================================================
+--- urllib3-1.5.orig/setup.cfg
++++ urllib3-1.5/setup.cfg
+@@ -1,5 +1,4 @@
+ [nosetests]
+-logging-clear-handlers = true
+ with-coverage = true
+ cover-package = urllib3
+ 
