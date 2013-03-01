@@ -8,23 +8,31 @@
 
 Name:           python-%{srcname}
 Version:        1.5
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
 URL:            http://urllib3.readthedocs.org/
 Source0:        http://pypi.python.org/packages/source/u/%{srcname}/%{srcname}-%{version}.tar.gz
+
 # Patch to change default behaviour to check SSL certs for validity
 # https://bugzilla.redhat.com/show_bug.cgi?id=855320
 Patch0:         python-urllib3-default-ssl-cert-validate.patch
+
 ### TODO: Send this to upstream urllib3
 # make all imports of things in packages try system copies first
 Patch1:         python-urllib3-unbundle.patch
-### TODO: Send this upstream
-# Compatibility with python-2.6's unittest
-Patch2:         python-urllib3-py2.6-compat.patch
+
+# Fix accept header when behind a proxy
+#https://github.com/shazow/urllib3/pull/93
+#https://github.com/shazow/urllib3/pull/93.patch
+Patch2:         python-urllib3-accept-header-for-proxy.patch
+
 # Remove logging-clear-handlers from setup.cfg because it's not available in RHEL6's nose
 Patch100:       python-urllib3-old-nose-compat.patch
+### TODO: Send this upstream
+# Compatibility with python-2.6's unittest
+Patch101:         python-urllib3-py2.6-compat.patch
 
 BuildArch:      noarch
 
@@ -78,9 +86,10 @@ rm -rf urllib3/packages/ordered_dict*
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %patch100 -p1
-%patch2 -p1
+%patch101 -p1
 %endif
 
 %if 0%{?with_python3}
@@ -135,6 +144,10 @@ popd
 %endif # with_python3
 
 %changelog
+* Fri Mar 01 2013 Ralph Bean <rbean@redhat.com> - 1.5-4
+- Upstream patch to fix Accept header when behind a proxy.
+- Reorganize patch numbers to more clearly distinguish them.
+
 * Wed Feb 27 2013 Ralph Bean <rbean@redhat.com> - 1.5-3
 - Renamed patches to python-urllib3-*
 - Fixed ssl check patch to use the correct cert path for Fedora.
