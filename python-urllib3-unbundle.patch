@@ -18,16 +18,22 @@ Index: urllib3-1.5/urllib3/connectionpool.py
 ===================================================================
 --- urllib3-1.5.orig/urllib3/connectionpool.py
 +++ urllib3-1.5/urllib3/connectionpool.py
-@@ -51,8 +51,14 @@ from .exceptions import (
+@@ -51,8 +51,20 @@ from .exceptions import (
      TimeoutError,
  )
  
 -from .packages.ssl_match_hostname import match_hostname, CertificateError
 -from .packages import six
 +try:
-+    from backports.ssl_match_hostname import match_hostname, CertificateError
++    # python3.2+
++    from ssl import match_hostname, CertificateError
 +except ImportError:
-+    from .packages.ssl_match_hostname import match_hostname, CertificateError
++    try:
++        # Older python where the backport from pypi is installed
++        from backports.ssl_match_hostname import match_hostname, CertificateError
++    except ImportError:
++        # Other older python we use our bundled copy
++        from .packages.ssl_match_hostname import match_hostname, CertificateError
 +try:
 +    import six
 +except ImportError:
@@ -106,15 +112,21 @@ Index: urllib3-1.5/test/test_connectionpool.py
 ===================================================================
 --- urllib3-1.5.orig/test/test_connectionpool.py
 +++ urllib3-1.5/test/test_connectionpool.py
-@@ -1,7 +1,10 @@
+@@ -1,7 +1,16 @@
  import unittest
  
  from urllib3.connectionpool import connection_from_url, HTTPConnectionPool
 -from urllib3.packages.ssl_match_hostname import CertificateError
 +try:
-+    from backports.ssl_match_hostname import CertificateError
++    # python3.2+
++    from ssl import CertificateError
 +except ImportError:
-+    from urllib3.packages.ssl_match_hostname import CertificateError
++    try:
++        # Older python where the backport from pypi is installed
++        from backports.ssl_match_hostname import CertificateError
++    except ImportError:
++        # Other older python we use our bundled copy
++        from urllib3.packages.ssl_match_hostname import CertificateError
  from urllib3.exceptions import (
      ClosedPoolError,
      EmptyPoolError,
@@ -134,3 +146,17 @@ Index: urllib3-1.5/test/test_filepost.py
  
  
  BOUNDARY = '!! test boundary !!'
+Index: urllib3-1.5/setup.py
+===================================================================
+--- urllib3-1.5.orig/setup.py
++++ urllib3-1.5/setup.py
+@@ -44,8 +44,7 @@ setup(name='urllib3',
+       author_email='andrey.petrov@shazow.net',
+       url='http://urllib3.readthedocs.org/',
+       license='MIT',
+-      packages=['urllib3', 'dummyserver', 'urllib3.packages',
+-                'urllib3.packages.ssl_match_hostname',
++      packages=['urllib3', 'dummyserver', 'urllib3',
+                 ],
+       requires=requirements,
+       tests_require=tests_requirements,

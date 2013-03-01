@@ -8,7 +8,7 @@
 
 Name:           python-%{srcname}
 Version:        1.5
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -39,8 +39,7 @@ BuildArch:      noarch
 Requires:       ca-certificates
 Requires:       python-six
 
-### TODO: In review https://bugzilla.redhat.com/show_bug.cgi?id=885013
-# Requires: python-backports-ssl_match_hostname
+Requires: python-backports-ssl_match_hostname
 %if 0%{?rhel} <= 6
 BuildRequires:  python-ordereddict
 Requires:       python-ordereddict
@@ -51,6 +50,7 @@ BuildRequires:  python2-devel
 BuildRequires:  python-nose
 BuildRequires:  python-six
 BuildRequires:  python-tornado
+BuildRequires: python-backports-ssl_match_hostname
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -77,12 +77,7 @@ Python3 HTTP module with connection pooling and file POST abilities.
 %prep
 %setup -q -n %{srcname}-%{version}
 
-### TODO: unbundle everything in packages/:
-# Need:
-# ssl_match_hostname https://bugzilla.redhat.com/show_bug.cgi?id=885013
-# rm -rf urllib3/packages/
-rm -rf urllib3/packages/six*
-rm -rf urllib3/packages/ordered_dict*
+rm -rf urllib3/packages/
 
 %patch0 -p1
 %patch1 -p1
@@ -144,6 +139,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Fri Mar  1 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 1.5-5
+- Unbundling finished!
+
 * Fri Mar 01 2013 Ralph Bean <rbean@redhat.com> - 1.5-4
 - Upstream patch to fix Accept header when behind a proxy.
 - Reorganize patch numbers to more clearly distinguish them.
