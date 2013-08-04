@@ -8,7 +8,7 @@
 
 Name:           python-%{srcname}
 Version:        1.5
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -139,6 +139,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Tue Jun 11 2013 Toshio Kuratomi <toshio@fedoraproject.org> - 1.5-6
 - Fix Requires of python-ordereddict to only apply to RHEL
 
