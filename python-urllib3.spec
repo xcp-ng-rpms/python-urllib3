@@ -7,8 +7,8 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.5
-Release:        7%{?dist}
+Version:        1.7
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -23,16 +23,8 @@ Patch0:         python-urllib3-default-ssl-cert-validate.patch
 # make all imports of things in packages try system copies first
 Patch1:         python-urllib3-unbundle.patch
 
-# Fix accept header when behind a proxy
-#https://github.com/shazow/urllib3/pull/93
-#https://github.com/shazow/urllib3/pull/93.patch
-Patch2:         python-urllib3-accept-header-for-proxy.patch
-
 # Remove logging-clear-handlers from setup.cfg because it's not available in RHEL6's nose
 Patch100:       python-urllib3-old-nose-compat.patch
-### TODO: Send this upstream
-# Compatibility with python-2.6's unittest
-Patch101:         python-urllib3-py2.6-compat.patch
 
 BuildArch:      noarch
 
@@ -81,10 +73,8 @@ rm -rf urllib3/packages/
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %patch100 -p1
-%patch101 -p1
 %endif
 
 %if 0%{?with_python3}
@@ -139,6 +129,11 @@ popd
 %endif # with_python3
 
 %changelog
+* Thu Aug 22 2013 Ralph Bean <rbean@redhat.com> - 1.7-1
+- Update to latest upstream.
+- Removed the accept-header proxy patch which is included in upstream now.
+- Removed py2.6 compat patch which is included in upstream now.
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.5-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 

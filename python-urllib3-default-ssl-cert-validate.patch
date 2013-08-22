@@ -1,20 +1,30 @@
-Author: Jamie Strandboge <jamie@canonical.com>
-Description: require SSL certificate validation by default by using
+From 2d80688fab4ae0af2d4bd20568c328bd2aae128c Mon Sep 17 00:00:00 2001
+From: Ralph Bean <rbean@redhat.com>
+Date: Thu, 22 Aug 2013 14:18:45 -0400
+Subject: [PATCH] Require SSL certificate validation by default by using
  CERT_REQUIRED and using the system /etc/ssl/certs/ca-certificates.crt
-Bug-Ubuntu: https://launchpad.net/bugs/1047054
-Modified for Fedora by Ralph Bean <rbean@redhat.com>
-Bug-Fedora: https://bugzilla.redhat.com/show_bug.cgi?id=855320
 
-Index: urllib3-1.5/urllib3/connectionpool.py
-===================================================================
---- urllib3-1.5.orig/urllib3/connectionpool.py
-+++ urllib3-1.5/urllib3/connectionpool.py
-@@ -504,7 +504,7 @@ class HTTPSConnectionPool(HTTPConnection
+Bug-Fedora: https://bugzilla.redhat.com/show_bug.cgi?id=855320
+Bug-Ubuntu: https://launchpad.net/bugs/1047054
+---
+ urllib3/connectionpool.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/urllib3/connectionpool.py b/urllib3/connectionpool.py
+index 621e1a8..7f4c322 100644
+--- a/urllib3/connectionpool.py
++++ b/urllib3/connectionpool.py
+@@ -556,8 +556,8 @@ class HTTPSConnectionPool(HTTPConnectionPool):
                   strict=False, timeout=None, maxsize=1,
                   block=False, headers=None,
-                  key_file=None, cert_file=None,
--                 cert_reqs='CERT_NONE', ca_certs=None):
-+                 cert_reqs='CERT_REQUIRED', ca_certs='/etc/ssl/certs/ca-certificates.crt'):
+                  _proxy=None, _proxy_headers=None,
+-                 key_file=None, cert_file=None, cert_reqs=None,
+-                 ca_certs=None, ssl_version=None,
++                 key_file=None, cert_file=None, cert_reqs=ssl.CERT_REQUIRED,
++                 ca_certs='/etc/ssl/certs/ca-certificates.crt', ssl_version=None,
+                  assert_hostname=None, assert_fingerprint=None):
  
-         super(HTTPSConnectionPool, self).__init__(host, port,
-                                                   strict, timeout, maxsize,
+         HTTPConnectionPool.__init__(self, host, port,
+-- 
+1.8.3.1
+
