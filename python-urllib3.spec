@@ -8,7 +8,7 @@
 
 Name:           python-%{srcname}
 Version:        1.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -129,6 +129,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Wed Aug 28 2013 Ralph Bean <rbean@redhat.com> - 1.7-3
+- Bump release again, just to push an unpaired update.
+
 * Mon Aug 26 2013 Ralph Bean <rbean@redhat.com> - 1.7-2
 - Bump release to pair an update with python-requests.
 
