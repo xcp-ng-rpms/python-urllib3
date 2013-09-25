@@ -1,24 +1,22 @@
-From 67a50e427b3feef042ce9817b0ad0a05f01fefb7 Mon Sep 17 00:00:00 2001
+From 8b8da1946efc6327f8a9e8bb478cb10f05cb24b5 Mon Sep 17 00:00:00 2001
 From: Ralph Bean <rbean@redhat.com>
-Date: Thu, 22 Aug 2013 14:37:02 -0400
-Subject: [PATCH] unbundle
+Date: Wed, 25 Sep 2013 13:27:45 -0400
+Subject: [PATCH 2/3] unbundle
 
 ---
- setup.py                     |  1 -
- test-requirements.txt        |  2 ++
- test/test_collections.py     |  2 +-
- test/test_connectionpool.py  |  9 ++++++++-
- test/test_fields.py          |  2 +-
- test/test_filepost.py        |  3 ++-
- urllib3.egg-info/PKG-INFO    |  2 +-
- urllib3.egg-info/SOURCES.txt |  6 +-----
- urllib3/_collections.py      |  2 +-
- urllib3/connectionpool.py    | 10 ++++++++--
- urllib3/fields.py            |  2 +-
- urllib3/filepost.py          |  4 ++--
- urllib3/response.py          |  2 +-
- urllib3/util.py              |  2 +-
- 14 files changed, 30 insertions(+), 19 deletions(-)
+ setup.py                    |  1 -
+ test-requirements.txt       |  2 ++
+ test/test_collections.py    |  7 ++++++-
+ test/test_connectionpool.py |  8 +++++++-
+ test/test_fields.py         |  3 ++-
+ test/test_filepost.py       |  2 +-
+ urllib3/_collections.py     |  2 +-
+ urllib3/connectionpool.py   | 12 ++++++++++--
+ urllib3/fields.py           |  2 +-
+ urllib3/filepost.py         |  4 ++--
+ urllib3/response.py         |  2 +-
+ urllib3/util.py             |  2 +-
+ 12 files changed, 34 insertions(+), 13 deletions(-)
 
 diff --git a/setup.py b/setup.py
 index 392b885..82af89c 100644
@@ -33,38 +31,42 @@ index 392b885..82af89c 100644
                  ],
        requires=requirements,
 diff --git a/test-requirements.txt b/test-requirements.txt
-index 1c90c10..e9a71d9 100644
+index f7c3a50..0fea32c 100644
 --- a/test-requirements.txt
 +++ b/test-requirements.txt
-@@ -1,3 +1,5 @@
- nose==1.3
+@@ -2,3 +2,5 @@ nose==1.3
+ mock==1.0.1
  tornado==2.4.1
  coverage==3.6
 +six
 +backports.ssl_match_hostname
 diff --git a/test/test_collections.py b/test/test_collections.py
-index b44c58a..a8f2e55 100644
+index b44c58a..962b6fd 100644
 --- a/test/test_collections.py
 +++ b/test/test_collections.py
-@@ -1,7 +1,7 @@
+@@ -1,7 +1,12 @@
  import unittest
  
  from urllib3._collections import RecentlyUsedContainer as Container
 -from urllib3.packages import six
-+import six
++
++try:
++    import six
++except ImportError:
++    from urllib3.packages import six
++
  xrange = six.moves.xrange
  
  
 diff --git a/test/test_connectionpool.py b/test/test_connectionpool.py
-index a7e104a..876b4ee 100644
+index ac1768e..c386798 100644
 --- a/test/test_connectionpool.py
 +++ b/test/test_connectionpool.py
-@@ -1,7 +1,14 @@
- import unittest
- 
- from urllib3.connectionpool import connection_from_url, HTTPConnectionPool
+@@ -6,7 +6,13 @@ from urllib3.connectionpool import (
+     HTTPConnectionPool,
+ )
+ from urllib3.util import Timeout
 -from urllib3.packages.ssl_match_hostname import CertificateError
-+
 +try:
 +    # python3.2+
 +    from ssl import CertificateError
@@ -76,58 +78,32 @@ index a7e104a..876b4ee 100644
      ClosedPoolError,
      EmptyPoolError,
 diff --git a/test/test_fields.py b/test/test_fields.py
-index 888c2d5..73dcd91 100644
+index 888c2d5..ddda1cf 100644
 --- a/test/test_fields.py
 +++ b/test/test_fields.py
-@@ -1,7 +1,7 @@
+@@ -1,7 +1,8 @@
  import unittest
  
  from urllib3.fields import guess_content_type, RequestField
--from urllib3.packages.six import b, u
-+from six import b, u
- 
- 
- class TestRequestField(unittest.TestCase):
-diff --git a/test/test_filepost.py b/test/test_filepost.py
-index ca33d61..7176a29 100644
---- a/test/test_filepost.py
-+++ b/test/test_filepost.py
-@@ -2,7 +2,8 @@ import unittest
- 
- from urllib3.filepost import encode_multipart_formdata, iter_fields
- from urllib3.fields import RequestField
 -from urllib3.packages.six import b, u
 +
 +from six import b, u
  
  
+ class TestRequestField(unittest.TestCase):
+diff --git a/test/test_filepost.py b/test/test_filepost.py
+index ca33d61..1b884c3 100644
+--- a/test/test_filepost.py
++++ b/test/test_filepost.py
+@@ -2,7 +2,7 @@ import unittest
+ 
+ from urllib3.filepost import encode_multipart_formdata, iter_fields
+ from urllib3.fields import RequestField
+-from urllib3.packages.six import b, u
++from six import b, u
+ 
+ 
  BOUNDARY = '!! test boundary !!'
-diff --git a/urllib3.egg-info/PKG-INFO b/urllib3.egg-info/PKG-INFO
-index 13a467c..8232870 100644
---- a/urllib3.egg-info/PKG-INFO
-+++ b/urllib3.egg-info/PKG-INFO
-@@ -1,4 +1,4 @@
--Metadata-Version: 1.0
-+Metadata-Version: 1.1
- Name: urllib3
- Version: 1.7
- Summary: HTTP library with thread-safe connection pooling, file post, and more.
-diff --git a/urllib3.egg-info/SOURCES.txt b/urllib3.egg-info/SOURCES.txt
-index 32759d9..9545027 100644
---- a/urllib3.egg-info/SOURCES.txt
-+++ b/urllib3.egg-info/SOURCES.txt
-@@ -38,8 +38,4 @@ urllib3.egg-info/dependency_links.txt
- urllib3.egg-info/top_level.txt
- urllib3/contrib/__init__.py
- urllib3/contrib/ntlmpool.py
--urllib3/contrib/pyopenssl.py
--urllib3/packages/__init__.py
--urllib3/packages/ordered_dict.py
--urllib3/packages/six.py
--urllib3/packages/ssl_match_hostname/__init__.py
-\ No newline at end of file
-+urllib3/contrib/pyopenssl.py
-\ No newline at end of file
 diff --git a/urllib3/_collections.py b/urllib3/_collections.py
 index 282b8d5..9210312 100644
 --- a/urllib3/_collections.py
@@ -142,15 +118,16 @@ index 282b8d5..9210312 100644
  
  __all__ = ['RecentlyUsedContainer']
 diff --git a/urllib3/connectionpool.py b/urllib3/connectionpool.py
-index 7f4c322..21dec73 100644
+index 551b6fd..f2c1438 100644
 --- a/urllib3/connectionpool.py
 +++ b/urllib3/connectionpool.py
-@@ -57,8 +57,14 @@ from .exceptions import (
+@@ -54,8 +54,16 @@ from .exceptions import (
+     ReadTimeoutError,
      ProxyError,
  )
- 
--from .packages.ssl_match_hostname import match_hostname, CertificateError
+-from .packages.ssl_match_hostname import CertificateError, match_hostname
 -from .packages import six
++
 +try:
 +    # python3.2+
 +    from ssl import match_hostname, CertificateError
@@ -159,9 +136,10 @@ index 7f4c322..21dec73 100644
 +    from backports.ssl_match_hostname import match_hostname, CertificateError
 +
 +import six
- 
- 
- xrange = six.moves.xrange
++
+ from .request import RequestMethods
+ from .response import HTTPResponse
+ from .util import (
 diff --git a/urllib3/fields.py b/urllib3/fields.py
 index ed01765..7a33b95 100644
 --- a/urllib3/fields.py
@@ -191,7 +169,7 @@ index 4575582..bc4a161 100644
  
  writer = codecs.lookup('utf-8')[3]
 diff --git a/urllib3/response.py b/urllib3/response.py
-index c7f93b8..a257cd7 100644
+index 4efff5a..32b2b3e 100644
 --- a/urllib3/response.py
 +++ b/urllib3/response.py
 @@ -10,7 +10,7 @@ import zlib
@@ -204,16 +182,16 @@ index c7f93b8..a257cd7 100644
  
  
 diff --git a/urllib3/util.py b/urllib3/util.py
-index 39bceab..55faae5 100644
+index 266c9ed..49de5fb 100644
 --- a/urllib3/util.py
 +++ b/urllib3/util.py
-@@ -31,7 +31,7 @@ try:  # Test for SSL features
+@@ -32,7 +32,7 @@ try:  # Test for SSL features
  except ImportError:
      pass
  
 -from .packages import six
 +import six
- from .exceptions import LocationParseError, SSLError
+ from .exceptions import LocationParseError, SSLError, TimeoutStateError
  
  
 -- 

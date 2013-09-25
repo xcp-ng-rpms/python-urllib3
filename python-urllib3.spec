@@ -7,8 +7,8 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.7
-Release:        3%{?dist}
+Version:        1.7.1
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -40,6 +40,7 @@ Requires:       python-ordereddict
 BuildRequires:  python2-devel
 # For unittests
 BuildRequires:  python-nose
+BuildRequires:  python-mock
 BuildRequires:  python-six
 BuildRequires:  python-tornado
 BuildRequires: python-backports-ssl_match_hostname
@@ -48,6 +49,7 @@ BuildRequires: python-backports-ssl_match_hostname
 BuildRequires:  python3-devel
 # For unittests
 BuildRequires:  python3-nose
+BuildRequires:  python3-mock
 BuildRequires:  python3-six
 BuildRequires:  python3-tornado
 %endif # with_python3
@@ -129,6 +131,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Wed Sep 25 2013 Ralph Bean <rbean@redhat.com> - 1.7.1-1
+- Latest upstream with support for a new timeout class and py3.4.
+
 * Wed Aug 28 2013 Ralph Bean <rbean@redhat.com> - 1.7-3
 - Bump release again, just to push an unpaired update.
 
