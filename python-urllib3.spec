@@ -8,7 +8,7 @@
 
 Name:           python-%{srcname}
 Version:        1.7.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -131,6 +131,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Mon Oct 28 2013 Ralph Bean <rbean@redhat.com> - 1.7.1-2
+- Update patch to find ca_certs in the correct location.
+
 * Wed Sep 25 2013 Ralph Bean <rbean@redhat.com> - 1.7.1-1
 - Latest upstream with support for a new timeout class and py3.4.
 

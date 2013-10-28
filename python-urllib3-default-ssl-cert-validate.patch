@@ -18,7 +18,7 @@ index 691d4e2..551b6fd 100644
 -                 key_file=None, cert_file=None, cert_reqs=None,
 -                 ca_certs=None, ssl_version=None,
 +                 key_file=None, cert_file=None, cert_reqs=ssl.CERT_REQUIRED,
-+                 ca_certs='/etc/ssl/certs/ca-certificates.crt', ssl_version=None,
++                 ca_certs='/etc/ssl/certs/ca-bundle.crt', ssl_version=None,
                   assert_hostname=None, assert_fingerprint=None):
  
          HTTPConnectionPool.__init__(self, host, port, strict, timeout, maxsize,
