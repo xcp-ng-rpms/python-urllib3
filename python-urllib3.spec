@@ -7,21 +7,17 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.7.1
-Release:        2%{?dist}
+Version:        1.8.2
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
 URL:            http://urllib3.readthedocs.org/
 Source0:        http://pypi.python.org/packages/source/u/%{srcname}/%{srcname}-%{version}.tar.gz
 
-# Patch to change default behaviour to check SSL certs for validity
-# https://bugzilla.redhat.com/show_bug.cgi?id=855320
-Patch0:         python-urllib3-default-ssl-cert-validate.patch
-
 ### TODO: Send this to upstream urllib3
 # make all imports of things in packages try system copies first
-Patch1:         python-urllib3-unbundle.patch
+Patch0:         python-urllib3-unbundle.patch
 
 # Remove logging-clear-handlers from setup.cfg because it's not available in RHEL6's nose
 Patch100:       python-urllib3-old-nose-compat.patch
@@ -74,7 +70,6 @@ Python3 HTTP module with connection pooling and file POST abilities.
 rm -rf urllib3/packages/
 
 %patch0 -p1
-%patch1 -p1
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %patch100 -p1
 %endif
@@ -131,6 +126,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Mon Apr 21 2014 Arun S A G <sagarun@gmail.com> - 1.8.2-1
+- Update to latest upstream version
+
 * Mon Oct 28 2013 Ralph Bean <rbean@redhat.com> - 1.7.1-2
 - Update patch to find ca_certs in the correct location.
 
