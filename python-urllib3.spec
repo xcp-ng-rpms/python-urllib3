@@ -8,7 +8,7 @@
 
 Name:           python-%{srcname}
 Version:        1.8.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -126,6 +126,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Wed May 14 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 1.8.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Changes/Python_3.4
+
 * Mon Apr 21 2014 Arun S A G <sagarun@gmail.com> - 1.8.2-1
 - Update to latest upstream version
 
