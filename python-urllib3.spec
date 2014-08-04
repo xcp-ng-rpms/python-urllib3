@@ -8,7 +8,7 @@
 
 Name:           python-%{srcname}
 Version:        1.8.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -114,18 +114,24 @@ popd
 %endif # with_python3
 
 %files
-%doc CHANGES.rst LICENSE.txt README.rst CONTRIBUTORS.txt
+%{!?_licensedir:%global license %%doc}
+%license LICENSE.txt
+%doc CHANGES.rst README.rst CONTRIBUTORS.txt
 # For noarch packages: sitelib
 %{python_sitelib}/*
 
 %if 0%{?with_python3}
 %files -n python3-%{srcname}
-%doc LICENSE.txt
+%{!?_licensedir:%global license %%doc}
+%license LICENSE.txt
 # For noarch packages: sitelib
 %{python3_sitelib}/*
 %endif # with_python3
 
 %changelog
+* Mon Aug  4 2014 Tom Callaway <spot@fedoraproject.org> - 1.8.2-4
+- fix license handling
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
