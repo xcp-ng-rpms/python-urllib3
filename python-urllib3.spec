@@ -7,8 +7,8 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.8.2
-Release:        4%{?dist}
+Version:        1.9.1
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -27,7 +27,7 @@ BuildArch:      noarch
 Requires:       ca-certificates
 Requires:       python-six
 
-Requires: python-backports-ssl_match_hostname
+Requires:       python-backports-ssl_match_hostname
 %if 0%{?rhel} && 0%{?rhel} <= 6
 BuildRequires:  python-ordereddict
 Requires:       python-ordereddict
@@ -39,7 +39,7 @@ BuildRequires:  python-nose
 BuildRequires:  python-mock
 BuildRequires:  python-six
 BuildRequires:  python-tornado
-BuildRequires: python-backports-ssl_match_hostname
+BuildRequires:  python-backports-ssl_match_hostname
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -129,6 +129,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Wed Nov 05 2014 Ralph Bean <rbean@redhat.com> - 1.9.1-1
+- Latest upstream, 1.9.1 for latest python-requests.
+
 * Mon Aug  4 2014 Tom Callaway <spot@fedoraproject.org> - 1.8.2-4
 - fix license handling
 
