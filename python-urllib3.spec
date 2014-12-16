@@ -7,7 +7,7 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.9.1
+Version:        1.10
 Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
@@ -15,19 +15,17 @@ License:        MIT
 URL:            http://urllib3.readthedocs.org/
 Source0:        http://pypi.python.org/packages/source/u/%{srcname}/%{srcname}-%{version}.tar.gz
 
-### TODO: Send this to upstream urllib3
-# make all imports of things in packages try system copies first
-Patch0:         python-urllib3-unbundle.patch
-
 # Remove logging-clear-handlers from setup.cfg because it's not available in RHEL6's nose
 Patch100:       python-urllib3-old-nose-compat.patch
 
 BuildArch:      noarch
 
 Requires:       ca-certificates
-Requires:       python-six
 
+# Previously bundled things:
+Requires:       python-six
 Requires:       python-backports-ssl_match_hostname
+
 %if 0%{?rhel} && 0%{?rhel} <= 6
 BuildRequires:  python-ordereddict
 Requires:       python-ordereddict
@@ -38,8 +36,8 @@ BuildRequires:  python2-devel
 BuildRequires:  python-nose
 BuildRequires:  python-mock
 BuildRequires:  python-six
-BuildRequires:  python-tornado
 BuildRequires:  python-backports-ssl_match_hostname
+BuildRequires:  python-tornado
 
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
@@ -67,9 +65,6 @@ Python3 HTTP module with connection pooling and file POST abilities.
 %prep
 %setup -q -n %{srcname}-%{version}
 
-rm -rf urllib3/packages/
-
-%patch0 -p1
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %patch100 -p1
 %endif
@@ -80,7 +75,7 @@ cp -a . %{py3dir}
 %endif # with_python3
 
 %build
-%{__python} setup.py build
+%{__python2} setup.py build
 
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -90,14 +85,37 @@ popd
 
 %install
 rm -rf %{buildroot}
-%{__python} setup.py install --skip-build --root %{buildroot}
+%{__python2} setup.py install --skip-build --root %{buildroot}
+
+rm -rf %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py*
+rm -rf %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname/
+
+mkdir -p %{buildroot}/%{python2_sitelib}/urllib3/packages/
+ln -s ../../six.py %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py
+ln -s ../../backports/ssl_match_hostname %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname
+
+# Copy in six.py just for the test suite.
+cp %{python2_sitelib}/six.* %{buildroot}/%{python2_sitelib}/.
+cp -r %{python2_sitelib}/backports %{buildroot}/%{python2_sitelib}/.
+ls -alh %{buildroot}/%{python2_sitelib}/urllib3/packages/
+ls -alh %{buildroot}/%{python2_sitelib}
 
 # dummyserver is part of the unittest framework
-rm -rf %{buildroot}%{python_sitelib}/dummyserver
+rm -rf %{buildroot}%{python2_sitelib}/dummyserver
 
 %if 0%{?with_python3}
 pushd %{py3dir}
 %{__python3} setup.py install --skip-build --root %{buildroot}
+
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py*
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/
+
+mkdir -p %{buildroot}/%{python3_sitelib}/urllib3/packages/
+ln -s ../../six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
+
+# Copy in six.py just for the test suite.
+cp %{python3_sitelib}/six.* %{buildroot}/%{python3_sitelib}/.
+ls -alh %{buildroot}/%{python3_sitelib}
 
 # dummyserver is part of the unittest framework
 rm -rf %{buildroot}%{python3_sitelib}/dummyserver
@@ -107,10 +125,18 @@ popd
 %check
 nosetests
 
+# And after its done, remove our copied in bits
+rm -rf %{buildroot}/%{python2_sitelib}/six*
+rm -rf %{buildroot}/%{python2_sitelib}/backports*
+
 %if 0%{?with_python3}
 pushd %{py3dir}
 nosetests-%{python3_version}
 popd
+
+# And after its done, remove our copied in bits
+rm -rf %{buildroot}/%{python3_sitelib}/six*
+rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %files
@@ -118,17 +144,24 @@ popd
 %license LICENSE.txt
 %doc CHANGES.rst README.rst CONTRIBUTORS.txt
 # For noarch packages: sitelib
-%{python_sitelib}/*
+%{python2_sitelib}/urllib3/
+%{python2_sitelib}/urllib3-*.egg-info
 
 %if 0%{?with_python3}
 %files -n python3-%{srcname}
 %{!?_licensedir:%global license %%doc}
 %license LICENSE.txt
 # For noarch packages: sitelib
-%{python3_sitelib}/*
+%{python3_sitelib}/urllib3/
+%{python3_sitelib}/urllib3-*.egg-info
 %endif # with_python3
 
 %changelog
+* Sun Dec 14 2014 Ralph Bean <rbean@redhat.com> - 1.10-1
+- Latest upstream 1.10, for python-requests-2.5.0.
+- Re-do unbundling without patch, with symlinks.
+- Modernize python2 macros.
+
 * Wed Nov 05 2014 Ralph Bean <rbean@redhat.com> - 1.9.1-1
 - Latest upstream, 1.9.1 for latest python-requests.
 
@@ -185,4 +218,3 @@ popd
 
 * Mon Feb 04 2013 Toshio Kuratomi <toshio@fedoraproject.org> 1.5-1
 - Initial fedora build.
-
