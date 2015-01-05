@@ -8,12 +8,13 @@
 
 Name:           python-%{srcname}
 Version:        1.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
 URL:            http://urllib3.readthedocs.org/
 Source0:        http://pypi.python.org/packages/source/u/%{srcname}/%{srcname}-%{version}.tar.gz
+Source1:        ssl_match_hostname_py3.py
 
 # Remove logging-clear-handlers from setup.cfg because it's not available in RHEL6's nose
 Patch100:       python-urllib3-old-nose-compat.patch
@@ -116,6 +117,7 @@ rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/
 
 mkdir -p %{buildroot}/%{python3_sitelib}/urllib3/packages/
 ln -s ../../six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
+cp %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
 
 # Copy in six.py just for the test suite.
 cp %{python3_sitelib}/six.* %{buildroot}/%{python3_sitelib}/.
@@ -161,6 +163,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Mon Jan 05 2015 Ralph Bean <rbean@redhat.com> - 1.10-2
+- Copy in a shim for ssl_match_hostname on python3.
+
 * Sun Dec 14 2014 Ralph Bean <rbean@redhat.com> - 1.10-1
 - Latest upstream 1.10, for python-requests-2.5.0.
 - Re-do unbundling without patch, with symlinks.
