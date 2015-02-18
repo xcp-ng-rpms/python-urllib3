@@ -7,8 +7,8 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.10
-Release:        2%{?dist}
+Version:        1.10.1
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -163,6 +163,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Wed Feb 18 2015 Ralph Bean <rbean@redhat.com> - 1.10.1-1
+- new version
+
 * Mon Jan 05 2015 Ralph Bean <rbean@redhat.com> - 1.10-2
 - Copy in a shim for ssl_match_hostname on python3.
 
