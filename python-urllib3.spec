@@ -166,6 +166,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 * Wed Feb 18 2015 Ralph Bean <rbean@redhat.com> - 1.10.1-1
 - new version
 
+* Wed Feb 18 2015 Ralph Bean <rbean@redhat.com> - 1.10.1-1
+- new version
+
 * Mon Jan 05 2015 Ralph Bean <rbean@redhat.com> - 1.10-2
 - Copy in a shim for ssl_match_hostname on python3.
 
