@@ -1,14 +1,14 @@
-From d1b64a6dc91bc9c350ac503febc34340c94c9066 Mon Sep 17 00:00:00 2001
-From: Ralph Bean <rbean@redhat.com>
-Date: Wed, 25 Sep 2013 13:28:37 -0400
-Subject: [PATCH 3/3] old nose compat
+From de33e923b6af308ca9f5aec5e5c3f625dc903f48 Mon Sep 17 00:00:00 2001
+From: Haikel Guemar <hguemar@fedoraproject.org>
+Date: Tue, 3 Mar 2015 15:28:22 +0100
+Subject: [PATCH] Old nose compat
 
 ---
  setup.cfg | 3 ---
  1 file changed, 3 deletions(-)
 
 diff --git a/setup.cfg b/setup.cfg
-index 8f1fee7..a8b1d1d 100644
+index b140696..eeb3f0b 100644
 --- a/setup.cfg
 +++ b/setup.cfg
 @@ -1,9 +1,6 @@
@@ -19,8 +19,8 @@ index 8f1fee7..a8b1d1d 100644
 -cover-min-percentage = 100
 -cover-erase = true
  
- [egg_info]
- tag_build = 
+ [flake8]
+ max-line-length = 99
 -- 
-1.8.3.1
+2.1.0
 
