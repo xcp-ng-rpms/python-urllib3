@@ -167,6 +167,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Thu Apr 23 2015 Ralph Bean <rbean@redhat.com> - 1.10.3-1
+- new version
+
 * Wed Apr 22 2015 Ralph Bean <rbean@redhat.com> - 1.10.3-1
 - new version
 
