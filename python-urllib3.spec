@@ -4,9 +4,9 @@
 %{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%global commit 585983ab3f7fb7a0e0b223ebdab1b45471dbefe4
+%global commit a91975b77a2e28394859487fe5ebbf4a3a74e634
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global checkout 20150429git%{shortcommit}
+%global checkout 20150503git%{shortcommit}
 
 %global gh_owner shazow
 %global gh_project urllib3
@@ -18,8 +18,8 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.10.3
-Release:        2.%{checkout}%{?dist}
+Version:        1.10.4
+Release:        1.%{checkout}%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -175,6 +175,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Sun May 03 2015 Ralph Bean <rbean@redhat.com> - 1.10.4-1.20150503gita91975b$a
+- Latest release for python-requests-2.7.0
+
 * Wed Apr 29 2015 Ralph Bean <rbean@redhat.com> - 1.10.3-2.20150429git585983a
 - Grab a git snapshot to get around this chunked encoding failure.
 
