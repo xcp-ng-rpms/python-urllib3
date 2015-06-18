@@ -19,7 +19,7 @@
 
 Name:           python-%{srcname}
 Version:        1.10.4
-Release:        3.%{checkout}%{?dist}
+Release:        4.%{checkout}%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -202,6 +202,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.10.4-4.20150503gita91975b
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Mon Jun 08 2015 Ralph Bean <rbean@redhat.com> - 1.10.4-3.20150503gita91975b
 - Apply pyopenssl injection for an outdated cpython as per upstream advice
   https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
