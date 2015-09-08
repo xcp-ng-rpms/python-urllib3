@@ -151,8 +151,12 @@ ln -s ../../backports/ssl_match_hostname %{buildroot}/%{python2_sitelib}/urllib3
 %endif
 
 # Copy in six.py just for the test suite.
+%if 0%{?fedora} >= 22
+cp %{python2_sitelib}/six.* %{buildroot}/%{python2_sitelib}/.
+%else
 cp %{python2_sitelib}/six.* %{buildroot}/%{python2_sitelib}/.
 cp -r %{python2_sitelib}/backports %{buildroot}/%{python2_sitelib}/.
+%endif
 
 # dummyserver is part of the unittest framework
 rm -rf %{buildroot}%{python2_sitelib}/dummyserver
