@@ -19,13 +19,17 @@
 
 Name:           python-%{srcname}
 Version:        1.10.4
-Release:        4.%{checkout}%{?dist}
+Release:        5.%{checkout}%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
 URL:            http://urllib3.readthedocs.org/
 Source0:        https://github.com/%{gh_owner}/%{gh_project}/archive/%{commit}/%{gh_project}-%{commit}.tar.gz
+
+# Only used for python3 (and for python2 on F22 and newer)
 Source1:        ssl_match_hostname_py3.py
+
+# Only used for F21.
 Patch0:         python-urllib3-pyopenssl.patch
 
 # Remove logging-clear-handlers from setup.cfg because it's not available in RHEL6's nose
@@ -37,7 +41,13 @@ Requires:       ca-certificates
 
 # Previously bundled things:
 Requires:       python-six
+
+# See comment-block in the %%install section.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1231381
+%if 0%{?fedora} && 0%{?fedora} <= 21
 Requires:       python-backports-ssl_match_hostname
+BuildRequires:  python-backports-ssl_match_hostname
+%endif
 
 %if 0%{?rhel} && 0%{?rhel} <= 6
 BuildRequires:  python-ordereddict
@@ -49,7 +59,6 @@ BuildRequires:  python2-devel
 BuildRequires:  python-nose
 BuildRequires:  python-mock
 BuildRequires:  python-six
-BuildRequires:  python-backports-ssl_match_hostname
 BuildRequires:  python-tornado
 
 %if 0%{?with_python3}
@@ -127,7 +136,19 @@ mkdir -p %{buildroot}/%{python2_sitelib}/urllib3/packages/
 ln -s ../../six.py %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py
 ln -s ../../six.pyc %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyc
 ln -s ../../six.pyo %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyo
+
+# In Fedora 22 and later, we ship Python 2.7.9 which carries an ssl module that
+# does what we need, so we replace urllib3's bundled ssl_match_hostname module
+# with our own that just proxies to the stdlib ssl module (to avoid carrying an
+# unnecessary dep on the backports.ssl_match_hostname module).
+# In Fedora 21 and earlier, we have an older Python 2.7, and so we require and
+# symlink in that backports.ssl_match_hostname module.
+#   https://bugzilla.redhat.com/show_bug.cgi?id=1231381
+%if 0%{?fedora} >= 22
+cp %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
+%else
 ln -s ../../backports/ssl_match_hostname %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname
+%endif
 
 # Copy in six.py just for the test suite.
 cp %{python2_sitelib}/six.* %{buildroot}/%{python2_sitelib}/.
@@ -199,6 +220,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Tue Sep 08 2015 Ralph Bean <rbean@redhat.com> - 1.10.4-5.20150503gita91975b
+- Drop requirement on python-backports-ssl_match_hostname on F22 and newer.
+
 * Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.10.4-4.20150503gita91975b
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
