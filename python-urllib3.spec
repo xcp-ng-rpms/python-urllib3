@@ -132,8 +132,6 @@ ln -s ../../backports/ssl_match_hostname %{buildroot}/%{python2_sitelib}/urllib3
 # Copy in six.py just for the test suite.
 cp %{python2_sitelib}/six.* %{buildroot}/%{python2_sitelib}/.
 cp -r %{python2_sitelib}/backports %{buildroot}/%{python2_sitelib}/.
-ls -alh %{buildroot}/%{python2_sitelib}/urllib3/packages/
-ls -alh %{buildroot}/%{python2_sitelib}
 
 # dummyserver is part of the unittest framework
 rm -rf %{buildroot}%{python2_sitelib}/dummyserver
@@ -153,7 +151,6 @@ cp %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostnam
 
 # Copy in six.py just for the test suite.
 cp %{python3_sitelib}/six.* %{buildroot}/%{python3_sitelib}/.
-ls -alh %{buildroot}/%{python3_sitelib}
 
 # dummyserver is part of the unittest framework
 rm -rf %{buildroot}%{python3_sitelib}/dummyserver
