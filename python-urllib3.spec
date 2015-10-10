@@ -4,13 +4,6 @@
 %{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%global commit a91975b77a2e28394859487fe5ebbf4a3a74e634
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global checkout 20150503git%{shortcommit}
-
-%global gh_owner shazow
-%global gh_project urllib3
-
 %if 0%{?fedora}
 %global with_python3 1
 %endif
@@ -19,12 +12,12 @@
 
 Name:           python-%{srcname}
 Version:        1.10.4
-Release:        5.%{checkout}%{?dist}
+Release:        6%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
 URL:            http://urllib3.readthedocs.org/
-Source0:        https://github.com/%{gh_owner}/%{gh_project}/archive/%{commit}/%{gh_project}-%{commit}.tar.gz
+Source0:        https://pypi.python.org/packages/source/u/%{srcname}/%{srcname}-%{version}.tar.gz
 
 # Only used for python3 (and for python2 on F22 and newer)
 Source1:        ssl_match_hostname_py3.py
@@ -96,8 +89,7 @@ Python3 HTTP module with connection pooling and file POST abilities.
 
 
 %prep
-#%%setup -q -n %{srcname}-%{version}
-%setup -q -n %{gh_project}-%{commit}
+%setup -q -n %{srcname}-%{version}
 
 # Drop the dummyserver tests in koji.  They fail there in real builds, but not
 # in scratch builds (weird).
@@ -224,6 +216,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Sat Oct 10 2015 Ralph Bean <rbean@redhat.com> - 1.10.4-6
+- Sync from PyPI instead of a git checkout.
+
 * Tue Sep 08 2015 Ralph Bean <rbean@redhat.com> - 1.10.4-5.20150503gita91975b
 - Drop requirement on python-backports-ssl_match_hostname on F22 and newer.
 
