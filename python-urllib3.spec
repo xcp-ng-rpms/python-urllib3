@@ -12,7 +12,7 @@
 
 Name:           python-%{srcname}
 Version:        1.10.4
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -216,6 +216,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Thu Oct 15 2015 Robert Kuska <rkuska@redhat.com> - 1.10.4-7
+- Rebuilt for Python3.5 rebuild
+
 * Sat Oct 10 2015 Ralph Bean <rbean@redhat.com> - 1.10.4-6
 - Sync from PyPI instead of a git checkout.
 
