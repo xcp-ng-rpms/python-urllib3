@@ -12,7 +12,7 @@
 
 Name:           python-%{srcname}
 Version:        1.13.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -24,6 +24,9 @@ Source1:        ssl_match_hostname_py3.py
 
 # Only used for F21.
 Patch0:         python-urllib3-pyopenssl.patch
+
+# Merged upstream. https://github.com/shazow/urllib3/pull/801
+Patch1:         python-urllib3-ipv6.patch
 
 # Remove logging-clear-handlers from setup.cfg because it's not available in RHEL6's nose
 Patch100:       python-urllib3-old-nose-compat.patch
@@ -107,6 +110,9 @@ cp -a . %{py3dir}
 %if 0%{?fedora} == 21
 %patch0 -p1
 %endif
+
+# Merged upstream.. remove this in the next release.
+%patch1 -p1
 
 %build
 %{__python2} setup.py build
@@ -216,6 +222,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Fri Feb 26 2016 Ralph Bean <rbean@redhat.com> - 1.13.1-3
+- Apply patch from upstream to fix ipv6.
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.13.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
