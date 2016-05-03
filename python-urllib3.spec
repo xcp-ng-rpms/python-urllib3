@@ -4,29 +4,30 @@
 %{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-%if 0%{?fedora}
 %global with_python3 1
+
+%if 0%{?fedora}
+%{!?python3_pkgversion: %global python3_pkgversion 3}
+%else
+%{!?python3_pkgversion: %global python3_pkgversion 34}
 %endif
 
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.13.1
-Release:        3%{?dist}
+Version:        1.15.1
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
 URL:            http://urllib3.readthedocs.org/
-Source0:        https://pypi.python.org/packages/source/u/%{srcname}/%{srcname}-%{version}.tar.gz
+Source0:        https://pypi.io/packages/source/u/%{srcname}/%{srcname}-%{version}.tar.gz
 
 # Only used for python3 (and for python2 on F22 and newer)
 Source1:        ssl_match_hostname_py3.py
 
 # Only used for F21.
 Patch0:         python-urllib3-pyopenssl.patch
-
-# Merged upstream. https://github.com/shazow/urllib3/pull/801
-Patch1:         python-urllib3-ipv6.patch
 
 # Remove logging-clear-handlers from setup.cfg because it's not available in RHEL6's nose
 Patch100:       python-urllib3-old-nose-compat.patch
@@ -37,6 +38,8 @@ Requires:       ca-certificates
 
 # Previously bundled things:
 Requires:       python-six
+
+Requires:       python-pysocks
 
 # See comment-block in the %%install section.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1231381
@@ -55,15 +58,17 @@ BuildRequires:  python2-devel
 BuildRequires:  python-nose
 BuildRequires:  python-mock
 BuildRequires:  python-six
+BuildRequires:  python-pysocks
 BuildRequires:  python-tornado
 
 %if 0%{?with_python3}
-BuildRequires:  python3-devel
+BuildRequires:  python%{python3_pkgversion}-devel
 # For unittests
-BuildRequires:  python3-nose
-BuildRequires:  python3-mock
-BuildRequires:  python3-six
-BuildRequires:  python3-tornado
+BuildRequires:  python%{python3_pkgversion}-nose
+BuildRequires:  python%{python3_pkgversion}-mock
+BuildRequires:  python%{python3_pkgversion}-six
+BuildRequires:  python%{python3_pkgversion}-pysocks
+BuildRequires:  python%{python3_pkgversion}-tornado
 %endif # with_python3
 
 
@@ -81,22 +86,21 @@ Requires:       python-pyasn1
 Python HTTP module with connection pooling and file POST abilities.
 
 %if 0%{?with_python3}
-%package -n python3-%{srcname}
-Requires:       ca-certificates
-Requires:       python3-six
-# Note: Will not run with python3 < 3.2 (unless python3-backports-ssl_match_hostname is created)
+%package -n python%{python3_pkgversion}-%{srcname}
 Summary:        Python3 HTTP library with thread-safe connection pooling and file post
-%description -n python3-%{srcname}
+
+Requires:       ca-certificates
+Requires:       python%{python3_pkgversion}-six
+Requires:       python%{python3_pkgversion}-pysocks
+# Note: Will not run with python3 < 3.2 (unless python%{python3_pkgversion}-backports-ssl_match_hostname is created)
+
+%description -n python%{python3_pkgversion}-%{srcname}
 Python3 HTTP module with connection pooling and file POST abilities.
 %endif # with_python3
 
 
 %prep
 %setup -q -n %{srcname}-%{version}
-
-# Drop the dummyserver tests in koji.  They fail there in real builds, but not
-# in scratch builds (weird).
-rm -rf test/with_dummyserver/
 
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %patch100 -p1
@@ -110,9 +114,6 @@ cp -a . %{py3dir}
 %if 0%{?fedora} == 21
 %patch0 -p1
 %endif
-
-# Merged upstream.. remove this in the next release.
-%patch1 -p1
 
 %build
 %{__python2} setup.py build
@@ -181,14 +182,7 @@ popd
 %endif # with_python3
 
 %check
-%if 0%{?fedora} == 21
-# On Fedora 21, we inject pyopenssl which works, but makes some tests fail, so
-# skip them.
-# https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-# https://urllib3.readthedocs.org/en/latest/security.html#pyopenssl
-%else
 nosetests
-%endif
 
 # And after its done, remove our copied in bits
 rm -rf %{buildroot}/%{python2_sitelib}/six*
@@ -213,7 +207,7 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %{python2_sitelib}/urllib3-*.egg-info
 
 %if 0%{?with_python3}
-%files -n python3-%{srcname}
+%files -n python%{python3_pkgversion}-%{srcname}
 %{!?_licensedir:%global license %%doc}
 %license LICENSE.txt
 # For noarch packages: sitelib
@@ -222,6 +216,11 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Fri Apr 29 2016 Ralph Bean <rbean@redhat.com> - 1.15.1-1
+- Removed patch for ipv6 support, now applied upstream.
+- Latest version.
+- New dep on pysocks.
+
 * Fri Feb 26 2016 Ralph Bean <rbean@redhat.com> - 1.13.1-3
 - Apply patch from upstream to fix ipv6.
 
