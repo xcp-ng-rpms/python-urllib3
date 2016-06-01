@@ -16,7 +16,7 @@
 
 Name:           python-%{srcname}
 Version:        1.15.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -173,8 +173,6 @@ rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/
 
 mkdir -p %{buildroot}/%{python3_sitelib}/urllib3/packages/
 ln -s ../../six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
-ln -s ../../six.pyc %{buildroot}/%{python3_sitelib}/urllib3/packages/six.pyc
-ln -s ../../six.pyo %{buildroot}/%{python3_sitelib}/urllib3/packages/six.pyo
 cp %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
 
 # Copy in six.py just for the test suite.
@@ -220,6 +218,10 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Wed Jun 01 2016 Ralph Bean <rbean@redhat.com> - 1.15.1-2
+- Remove broken symlinks to unbundled python3-six files
+  https://bugzilla.redhat.com/show_bug.cgi?id=1295015
+
 * Fri Apr 29 2016 Ralph Bean <rbean@redhat.com> - 1.15.1-1
 - Removed patch for ipv6 support, now applied upstream.
 - Latest version.
