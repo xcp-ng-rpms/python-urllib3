@@ -16,7 +16,7 @@
 
 Name:           python-%{srcname}
 Version:        1.15.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -34,24 +34,18 @@ Patch100:       python-urllib3-old-nose-compat.patch
 
 BuildArch:      noarch
 
+%description
+Python HTTP module with connection pooling and file POST abilities.
+
+%package -n python2-%{srcname}
+Summary:        Python2 HTTP library with thread-safe connection pooling and file post
+%{?python_provide:%python_provide python2-%{srcname}}
+
 Requires:       ca-certificates
 
 # Previously bundled things:
 Requires:       python-six
-
 Requires:       python-pysocks
-
-# See comment-block in the %%install section.
-# https://bugzilla.redhat.com/show_bug.cgi?id=1231381
-%if 0%{?fedora} && 0%{?fedora} <= 21
-Requires:       python-backports-ssl_match_hostname
-BuildRequires:  python-backports-ssl_match_hostname
-%endif
-
-%if 0%{?rhel} && 0%{?rhel} <= 6
-BuildRequires:  python-ordereddict
-Requires:       python-ordereddict
-%endif
 
 BuildRequires:  python2-devel
 # For unittests
@@ -61,7 +55,19 @@ BuildRequires:  python-six
 BuildRequires:  python-pysocks
 BuildRequires:  python-tornado
 
+%if 0%{?rhel} && 0%{?rhel} <= 6
+BuildRequires:  python-ordereddict
+Requires:       python-ordereddict
+%endif
+
+%description -n python2-%{srcname}
+Python2 HTTP module with connection pooling and file POST abilities.
+
 %if 0%{?with_python3}
+%package -n python%{python3_pkgversion}-%{srcname}
+Summary:        Python3 HTTP library with thread-safe connection pooling and file post
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
+
 BuildRequires:  python%{python3_pkgversion}-devel
 # For unittests
 BuildRequires:  python%{python3_pkgversion}-nose
@@ -69,30 +75,10 @@ BuildRequires:  python%{python3_pkgversion}-mock
 BuildRequires:  python%{python3_pkgversion}-six
 BuildRequires:  python%{python3_pkgversion}-pysocks
 BuildRequires:  python%{python3_pkgversion}-tornado
-%endif # with_python3
-
-
-%if 0%{?fedora} == 21
-BuildRequires:  pyOpenSSL
-BuildRequires:  python-ndg_httpsclient
-BuildRequires:  python-pyasn1
-Requires:       pyOpenSSL
-Requires:       python-ndg_httpsclient
-Requires:       python-pyasn1
-%endif
-
-
-%description
-Python HTTP module with connection pooling and file POST abilities.
-
-%if 0%{?with_python3}
-%package -n python%{python3_pkgversion}-%{srcname}
-Summary:        Python3 HTTP library with thread-safe connection pooling and file post
 
 Requires:       ca-certificates
 Requires:       python%{python3_pkgversion}-six
 Requires:       python%{python3_pkgversion}-pysocks
-# Note: Will not run with python3 < 3.2 (unless python%{python3_pkgversion}-backports-ssl_match_hostname is created)
 
 %description -n python%{python3_pkgversion}-%{srcname}
 Python3 HTTP module with connection pooling and file POST abilities.
@@ -200,7 +186,7 @@ rm -rf %{buildroot}/%{python3_sitelib}/six*
 rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
-%files
+%files -n python2-%{srcname}
 %{!?_licensedir:%global license %%doc}
 %license LICENSE.txt
 %doc CHANGES.rst README.rst CONTRIBUTORS.txt
@@ -218,6 +204,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Thu Jun 02 2016 Ralph Bean <rbean@redhat.com> - 1.15.1-3
+- Create python2 subpackage to comply with guidelines.
+
 * Wed Jun 01 2016 Ralph Bean <rbean@redhat.com> - 1.15.1-2
 - Remove broken symlinks to unbundled python3-six files
   https://bugzilla.redhat.com/show_bug.cgi?id=1295015
