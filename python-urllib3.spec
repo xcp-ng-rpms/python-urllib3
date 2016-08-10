@@ -16,7 +16,7 @@
 
 Name:           python-%{srcname}
 Version:        1.16
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -204,6 +204,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 %endif # with_python3
 
 %changelog
+* Wed Aug 10 2016 Kevin Fenzi <kevin@scrye.com> - 1.16-3
+- Rebuild now that python-requests is ready to update.
+
 * Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.16-2
 - https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
 
