@@ -2,7 +2,7 @@
 
 Name:           python-%{srcname}
 Version:        1.19.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -140,6 +140,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 
 
 %changelog
+* Tue Dec 13 2016 Stratakis Charalampos <cstratak@redhat.com> - 1.19.1-2
+- Rebuild for Python 3.6
+
 * Thu Nov 17 2016 Jeremy Cline <jeremy@jcline.org> 1.19.1-1
 - Update to 1.19.1
 - Clean up the specfile to only support Fedora 26
