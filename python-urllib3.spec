@@ -142,8 +142,11 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 
 
 %changelog
-* Wed Jan 25 2017 Jeremy Cline <jeremy@jcline.org> - 1.20.0-1
-- Update to 1.20.0 (#1414775)
+* Thu Feb 09 2017 Jeremy Cline <jeremy@jcline.org> - 1.20-1
+- Update to 1.20 (#1414775)
+
+* Tue Dec 13 2016 Stratakis Charalampos <cstratak@redhat.com> - 1.19.1-2
+- Rebuild for Python 3.6
 
 * Thu Nov 17 2016 Jeremy Cline <jeremy@jcline.org> 1.19.1-1
 - Update to 1.19.1
