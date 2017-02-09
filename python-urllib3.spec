@@ -1,7 +1,7 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.19.1
+Version:        1.20
 Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
@@ -39,6 +39,7 @@ BuildRequires:  python-nose-exclude
 BuildRequires:  python-coverage
 BuildRequires:  python-mock
 BuildRequires:  python-six
+BuildRequires:  python-psutil
 BuildRequires:  python-pysocks
 BuildRequires:  python-tornado
 
@@ -55,6 +56,7 @@ BuildRequires:  python3-nose
 BuildRequires:  python3-mock
 BuildRequires:  python3-six
 BuildRequires:  python3-pysocks
+BuildRequires:  python3-psutil
 BuildRequires:  python3-tornado
 
 Requires:       ca-certificates
@@ -140,6 +142,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 
 
 %changelog
+* Wed Jan 25 2017 Jeremy Cline <jeremy@jcline.org> - 1.20.0-1
+- Update to 1.20.0 (#1414775)
+
 * Thu Nov 17 2016 Jeremy Cline <jeremy@jcline.org> 1.19.1-1
 - Update to 1.19.1
 - Clean up the specfile to only support Fedora 26
