@@ -41,6 +41,7 @@ BuildRequires:  python-mock
 BuildRequires:  python-six
 BuildRequires:  python-psutil
 BuildRequires:  python-pysocks
+BuildRequires:  python2-pytest
 BuildRequires:  python-tornado
 
 %description -n python2-%{srcname}
@@ -57,6 +58,7 @@ BuildRequires:  python3-mock
 BuildRequires:  python3-six
 BuildRequires:  python3-pysocks
 BuildRequires:  python3-psutil
+BuildRequires:  python3-pytest
 BuildRequires:  python3-tornado
 
 Requires:       ca-certificates
