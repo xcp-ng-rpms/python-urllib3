@@ -119,8 +119,8 @@ cp %{python3_sitelib}/six.* %{buildroot}/%{python3_sitelib}/.
 
 
 %check
-nosetests
-nosetests-%{python3_version}
+py.test
+py.test-3
 
 # And after its done, remove our copied in bits
 rm -rf %{buildroot}/%{python2_sitelib}/six*
