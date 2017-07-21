@@ -1,7 +1,7 @@
 %global srcname urllib3
 
 Name:           python-%{srcname}
-Version:        1.21.1
+Version:        1.22
 Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
@@ -142,6 +142,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 
 
 %changelog
+* Fri Jul 21 2017 Jeremy Cline <jeremy@jcline.org> - 1.22-1
+- Update to 1.22 (#1473293)
+
 * Wed May 17 2017 Jeremy Cline <jeremy@jcline.org> - 1.21.1-1
 - Update to 1.21.1 (#1445280)
 
