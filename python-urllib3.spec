@@ -78,6 +78,8 @@ Python3 HTTP module with connection pooling and file POST abilities.
 # Drop the dummyserver tests in koji.  They fail there in real builds, but not
 # in scratch builds (weird).
 rm -rf test/with_dummyserver/
+# Don't run the Google App Engine tests
+rm -rf test/appengine/
 # Lots of these tests started failing, even for old versions, so it has something
 # to do with Fedora in particular. They don't fail in upstream build infrastructure
 rm -rf test/contrib/
