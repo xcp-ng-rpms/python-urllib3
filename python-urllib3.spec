@@ -2,7 +2,7 @@
 
 Name:           python-%{srcname}
 Version:        1.22
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -106,29 +106,22 @@ ln -s ../../backports/ssl_match_hostname %{buildroot}/%{python2_sitelib}/urllib3
 
 # Unbundle the Python 3 build
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py*
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/six*
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/
 
 mkdir -p %{buildroot}/%{python3_sitelib}/urllib3/packages/
 ln -s ../../six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
+ln -s ../../../__pycache__/six.cpython-%{python3_version_nodots}.opt-1.pyc %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
+ln -s ../../../__pycache__/six.cpython-%{python3_version_nodots}.pyc %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
 # urllib3 requires Python 3.5 to use the standard library's match_hostname,
 # which we ship in Fedora 26, so we can safely replace the bundled version with
 # this stub which imports the necessary objects.
 cp %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
 
-# Copy in six.py just for the test suite.
-cp %{python2_sitelib}/six.* %{buildroot}/%{python2_sitelib}/.
-cp %{python3_sitelib}/six.* %{buildroot}/%{python3_sitelib}/.
-
 
 %check
 py.test
 py.test-3
-
-# And after its done, remove our copied in bits
-rm -rf %{buildroot}/%{python2_sitelib}/six*
-rm -rf %{buildroot}/%{python2_sitelib}/backports*
-rm -rf %{buildroot}/%{python3_sitelib}/six*
-rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 
 
 %files -n python2-%{srcname}
@@ -146,6 +139,9 @@ rm -rf %{buildroot}/%{python3_sitelib}/__pycache__*
 
 
 %changelog
+* Fri Dec 01 2017 Jeremy Cline <jeremy@jcline.org> - 1.22-3
+- Symlink the Python 3 bytecode for six (rbhz 1519147)
+
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.22-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
