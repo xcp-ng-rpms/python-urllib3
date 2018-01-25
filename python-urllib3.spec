@@ -2,7 +2,7 @@
 
 Name:           python-%{srcname}
 Version:        1.22
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -10,6 +10,8 @@ URL:            https://github.com/shazow/urllib3
 Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
 # Used with Python 3.5+
 Source1:        ssl_match_hostname_py3.py
+# https://github.com/shazow/urllib3/commit/4bff1e93d2dd4663d422d7e290473d9189cec5db
+Patch0:         python-urllib3-recent-date.patch
 BuildArch:      noarch
 
 %description
@@ -75,6 +77,7 @@ Python3 HTTP module with connection pooling and file POST abilities.
 
 %prep
 %setup -q -n %{srcname}-%{version}
+%patch0 -p1 -b .recent-date
 # Drop the dummyserver tests in koji.  They fail there in real builds, but not
 # in scratch builds (weird).
 rm -rf test/with_dummyserver/
@@ -139,6 +142,9 @@ py.test-3
 
 
 %changelog
+* Thu Jan 25 2018 Tomas Hoger <thoger@redhat.com> - 1.22-4
+- Fix FTBFS - Move RECENT_DATE to 2017-06-30
+
 * Fri Dec 01 2017 Jeremy Cline <jeremy@jcline.org> - 1.22-3
 - Symlink the Python 3 bytecode for six (rbhz 1519147)
 
