@@ -2,7 +2,7 @@
 
 Name:           python-%{srcname}
 Version:        1.22
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -24,27 +24,27 @@ Summary:        Python2 HTTP library with thread-safe connection pooling and fil
 Requires:       ca-certificates
 
 # Previously bundled things:
-Requires:       python-six
-Requires:       python-backports-ssl_match_hostname
+Requires:       python2-six
+Requires:       python2-backports-ssl_match_hostname
 
 # Secure extra requirements
 Requires:       python2-pyOpenSSL
-Requires:       python-cryptography
-Requires:       python-idna
-Requires:       python-ipaddress
-Requires:       python-pysocks
+Requires:       python2-cryptography
+Requires:       python2-idna
+Requires:       python2-ipaddress
+Requires:       python2-pysocks
 
 BuildRequires:  python2-devel
 # For unittests
-BuildRequires:  python-nose
-BuildRequires:  python-nose-exclude
-BuildRequires:  python-coverage
-BuildRequires:  python-mock
-BuildRequires:  python-six
-BuildRequires:  python-psutil
-BuildRequires:  python-pysocks
+BuildRequires:  python2-nose
+BuildRequires:  python2-nose-exclude
+BuildRequires:  python2-coverage
+BuildRequires:  python2-mock
+BuildRequires:  python2-six
+BuildRequires:  python2-psutil
+BuildRequires:  python2-pysocks
 BuildRequires:  python2-pytest
-BuildRequires:  python-tornado
+BuildRequires:  python2-tornado
 
 %description -n python2-%{srcname}
 Python2 HTTP module with connection pooling and file POST abilities.
@@ -142,6 +142,10 @@ py.test-3
 
 
 %changelog
+* Wed Jan 31 2018 Iryna Shcherbina <ishcherb@redhat.com> - 1.22-5
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
 * Thu Jan 25 2018 Tomas Hoger <thoger@redhat.com> - 1.22-4
 - Fix FTBFS - Move RECENT_DATE to 2017-06-30
 
