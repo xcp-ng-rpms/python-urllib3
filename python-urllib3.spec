@@ -2,7 +2,7 @@
 
 Name:           python-%{srcname}
 Version:        1.22
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -142,6 +142,9 @@ py.test-3
 
 
 %changelog
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.22-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Wed Jan 31 2018 Iryna Shcherbina <ishcherb@redhat.com> - 1.22-5
 - Update Python 2 dependency declarations to new packaging standards
   (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
