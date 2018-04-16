@@ -2,7 +2,7 @@
 
 Name:           python-%{srcname}
 Version:        1.22
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -28,7 +28,6 @@ Requires:       python2-six
 Requires:       python2-backports-ssl_match_hostname
 
 # Secure extra requirements
-Requires:       python2-pyOpenSSL
 Requires:       python2-cryptography
 Requires:       python2-idna
 Requires:       python2-ipaddress
@@ -66,7 +65,6 @@ BuildRequires:  python3-tornado
 Requires:       ca-certificates
 Requires:       python3-six
 Requires:       python3-pysocks
-Requires:       python3-pyOpenSSL
 Requires:       python3-cryptography
 Requires:       python3-idna
 Requires:       python3-pysocks
@@ -142,6 +140,9 @@ py.test-3
 
 
 %changelog
+* Mon Apr 16 2018 Jeremy Cline <jeremy@jcline.org> - 1.22-7
+- Drop the dependency on PyOpenSSL, it's not needed (rhbz 1567862)
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.22-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
