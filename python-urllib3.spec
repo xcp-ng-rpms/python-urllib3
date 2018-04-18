@@ -2,7 +2,7 @@
 
 Name:           python-%{srcname}
 Version:        1.22
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -28,8 +28,6 @@ Requires:       python2-six
 Requires:       python2-backports-ssl_match_hostname
 
 # Secure extra requirements
-Requires:       python2-cryptography
-Requires:       python2-idna
 Requires:       python2-ipaddress
 Requires:       python2-pysocks
 
@@ -64,9 +62,6 @@ BuildRequires:  python3-tornado
 
 Requires:       ca-certificates
 Requires:       python3-six
-Requires:       python3-pysocks
-Requires:       python3-cryptography
-Requires:       python3-idna
 Requires:       python3-pysocks
 
 %description -n python3-%{srcname}
@@ -140,6 +135,9 @@ py.test-3
 
 
 %changelog
+* Wed Apr 18 2018 Jeremy Cline <jeremy@jcline.org> - 1.22-8
+- Drop the dependency on idna and cryptography (rhbz 1567862)
+
 * Mon Apr 16 2018 Jeremy Cline <jeremy@jcline.org> - 1.22-7
 - Drop the dependency on PyOpenSSL, it's not needed (rhbz 1567862)
 
