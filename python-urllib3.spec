@@ -2,7 +2,7 @@
 
 Name:           python-%{srcname}
 Version:        1.22
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -12,6 +12,8 @@ Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
 Source1:        ssl_match_hostname_py3.py
 # https://github.com/shazow/urllib3/commit/4bff1e93d2dd4663d422d7e290473d9189cec5db
 Patch0:         python-urllib3-recent-date.patch
+# https://github.com/urllib3/urllib3/commit/9f09cb4b9d69bd8944c881f61b8fe933ad425b5b
+Patch0001:      0001-Do-not-lowercase-hostnames-with-custom-protocol.patch
 BuildArch:      noarch
 
 %description
@@ -71,6 +73,7 @@ Python3 HTTP module with connection pooling and file POST abilities.
 %prep
 %setup -q -n %{srcname}-%{version}
 %patch0 -p1 -b .recent-date
+%patch1 -p1
 # Drop the dummyserver tests in koji.  They fail there in real builds, but not
 # in scratch builds (weird).
 rm -rf test/with_dummyserver/
@@ -135,6 +138,10 @@ py.test-3
 
 
 %changelog
+* Thu May 03 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.22-9
+- Do not lowercase hostnames with custom-protocol (rhbz 1567862)
+- upstream: https://github.com/urllib3/urllib3/issues/1267
+
 * Wed Apr 18 2018 Jeremy Cline <jeremy@jcline.org> - 1.22-8
 - Drop the dependency on idna and cryptography (rhbz 1567862)
 

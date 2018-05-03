@@ -1,0 +1,114 @@
+From 92da9e010f506cdd2408f6915ff87926f907c927 Mon Sep 17 00:00:00 2001
+From: Lukas Slebodnik <lslebodn@fedoraproject.org>
+Date: Thu, 12 Apr 2018 00:34:07 +0200
+Subject: [PATCH 1] Do not lowercase hostnames with custom-protocol(#1267)
+
+Unix sockets are are case sensitive the same as other files
+on standard unix file systems.
+---
+ urllib3/connectionpool.py | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/test/test_connectionpool.py b/test/test_connectionpool.py
+index d8b8a83..4b74ab4 100644
+--- a/test/test_connectionpool.py
++++ b/test/test_connectionpool.py
+@@ -32,6 +32,19 @@ from ssl import SSLError as BaseSSLError
+ from dummyserver.server import DEFAULT_CA
+ 
+ 
++class HTTPUnixConnection(HTTPConnection):
++    def __init__(self, host, timeout=60, **kwargs):
++        super(HTTPUnixConnection, self).__init__('localhost')
++        self.unix_socket = host
++        self.timeout = timeout
++        self.sock = None
++
++
++class HTTPUnixConnectionPool(HTTPConnectionPool):
++    scheme = 'http+unix'
++    ConnectionCls = HTTPUnixConnection
++
++
+ class TestConnectionPool(object):
+     """
+     Tests in this suite should exercise the ConnectionPool functionality
+@@ -138,6 +151,31 @@ class TestConnectionPool(object):
+         with HTTPSConnectionPool(b) as c:
+             assert not c.is_same_host(a)
+ 
++    @pytest.mark.parametrize('a, b', [
++        ('%2Fvar%2Frun%2Fdocker.sock',
++         'http+unix://%2Fvar%2Frun%2Fdocker.sock'),
++        ('%2Fvar%2Frun%2Fdocker.sock',
++         'http+unix://%2Fvar%2Frun%2Fdocker.sock/'),
++        ('%2Fvar%2Frun%2Fdocker.sock',
++         'http+unix://%2Fvar%2Frun%2Fdocker.sock/abracadabra'),
++        ('%2Ftmp%2FTEST.sock', 'http+unix://%2Ftmp%2FTEST.sock'),
++        ('%2Ftmp%2FTEST.sock', 'http+unix://%2Ftmp%2FTEST.sock/'),
++        ('%2Ftmp%2FTEST.sock', 'http+unix://%2Ftmp%2FTEST.sock/abracadabra'),
++    ])
++    def test_same_host_custom_protocol(self, a, b):
++        with HTTPUnixConnectionPool(a) as c:
++            assert c.is_same_host(b)
++
++    @pytest.mark.parametrize('a, b', [
++        ('%2Ftmp%2Ftest.sock', 'http+unix://%2Ftmp%2FTEST.sock'),
++        ('%2Ftmp%2Ftest.sock', 'http+unix://%2Ftmp%2FTEST.sock/'),
++        ('%2Ftmp%2Ftest.sock', 'http+unix://%2Ftmp%2FTEST.sock/abracadabra'),
++        ('%2Fvar%2Frun%2Fdocker.sock', 'http+unix://%2Ftmp%2FTEST.sock'),
++    ])
++    def test_not_same_host_custom_protocol(self, a, b):
++        with HTTPUnixConnectionPool(a) as c:
++            assert not c.is_same_host(b)
++
+     def test_max_connections(self):
+         with HTTPConnectionPool(host='localhost', maxsize=1, block=True) as pool:
+             pool._get_conn(timeout=0.01)
+diff --git a/urllib3/connectionpool.py b/urllib3/connectionpool.py
+index ec9600f..2d7a26b 100644
+--- a/urllib3/connectionpool.py
++++ b/urllib3/connectionpool.py
+@@ -40,7 +40,7 @@ from .util.request import set_file_position
+ from .util.response import assert_header_parsing
+ from .util.retry import Retry
+ from .util.timeout import Timeout
+-from .util.url import get_host, Url
++from .util.url import get_host, Url, NORMALIZABLE_SCHEMES
+ 
+ 
+ if six.PY2:
+@@ -68,7 +68,7 @@ class ConnectionPool(object):
+         if not host:
+             raise LocationValueError("No host specified.")
+ 
+-        self.host = _ipv6_host(host).lower()
++        self.host = _ipv6_host(host, self.scheme)
+         self._proxy_host = host.lower()
+         self.port = port
+ 
+@@ -434,7 +434,7 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
+         # TODO: Add optional support for socket.gethostbyname checking.
+         scheme, host, port = get_host(url)
+ 
+-        host = _ipv6_host(host).lower()
++        host = _ipv6_host(host, self.scheme)
+ 
+         # Use explicit default port for comparison when none is given
+         if self.port and not port:
+@@ -886,7 +886,7 @@ def connection_from_url(url, **kw):
+         return HTTPConnectionPool(host, port=port, **kw)
+ 
+ 
+-def _ipv6_host(host):
++def _ipv6_host(host, scheme):
+     """
+     Process IPv6 address literals
+     """
+@@ -902,4 +902,6 @@ def _ipv6_host(host):
+     # percent sign might be URIencoded, convert it back into ASCII
+     if host.startswith('[') and host.endswith(']'):
+         host = host.replace('%25', '%').strip('[]')
++    if scheme in NORMALIZABLE_SCHEMES:
++        host = host.lower()
+     return host
