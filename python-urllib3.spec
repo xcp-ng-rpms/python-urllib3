@@ -1,5 +1,8 @@
 %global srcname urllib3
 
+# When bootstrapping Python, we cannot test this yet
+%bcond_without tests
+
 Name:           python-%{srcname}
 Version:        1.22
 Release:        9%{?dist}
@@ -34,7 +37,7 @@ Requires:       python2-ipaddress
 Requires:       python2-pysocks
 
 BuildRequires:  python2-devel
-# For unittests
+%if %{with tests}
 BuildRequires:  python2-nose
 BuildRequires:  python2-nose-exclude
 BuildRequires:  python2-coverage
@@ -44,6 +47,7 @@ BuildRequires:  python2-psutil
 BuildRequires:  python2-pysocks
 BuildRequires:  python2-pytest
 BuildRequires:  python2-tornado
+%endif
 
 %description -n python2-%{srcname}
 Python2 HTTP module with connection pooling and file POST abilities.
@@ -53,7 +57,7 @@ Python2 HTTP module with connection pooling and file POST abilities.
 Summary:        Python3 HTTP library with thread-safe connection pooling and file post
 
 BuildRequires:  python3-devel
-# For unittests
+%if %{with tests}
 BuildRequires:  python3-nose
 BuildRequires:  python3-mock
 BuildRequires:  python3-six
@@ -61,6 +65,7 @@ BuildRequires:  python3-pysocks
 BuildRequires:  python3-psutil
 BuildRequires:  python3-pytest
 BuildRequires:  python3-tornado
+%endif
 
 Requires:       ca-certificates
 Requires:       python3-six
@@ -118,9 +123,11 @@ ln -s ../../../__pycache__/six.cpython-%{python3_version_nodots}.pyc %{buildroot
 cp %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
 
 
+%if %{with tests}
 %check
 py.test
 py.test-3
+%endif
 
 
 %files -n python2-%{srcname}
