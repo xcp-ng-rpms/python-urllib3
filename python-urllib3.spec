@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.22
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -16,7 +16,9 @@ Source1:        ssl_match_hostname_py3.py
 # https://github.com/shazow/urllib3/commit/4bff1e93d2dd4663d422d7e290473d9189cec5db
 Patch0:         python-urllib3-recent-date.patch
 # https://github.com/urllib3/urllib3/commit/9f09cb4b9d69bd8944c881f61b8fe933ad425b5b
-Patch0001:      0001-Do-not-lowercase-hostnames-with-custom-protocol.patch
+Patch1:      0001-Do-not-lowercase-hostnames-with-custom-protocol.patch
+# https://github.com/urllib3/urllib3/pull/1375 - Python 3.7 support
+Patch2:         Address-1365.-CertificateError-str-repr-is-tuple-not.patch
 BuildArch:      noarch
 
 %description
@@ -79,6 +81,7 @@ Python3 HTTP module with connection pooling and file POST abilities.
 %setup -q -n %{srcname}-%{version}
 %patch0 -p1 -b .recent-date
 %patch1 -p1
+%patch2 -p1
 # Drop the dummyserver tests in koji.  They fail there in real builds, but not
 # in scratch builds (weird).
 rm -rf test/with_dummyserver/
@@ -145,6 +148,9 @@ py.test-3
 
 
 %changelog
+* Wed May 30 2018 Jeremy Cline <jeremy@jcline.org> - 1.22-10
+- Backport patch to support Python 3.7 (rhbz 1584112)
+
 * Thu May 03 2018 Lukas Slebodnik <lslebodn@fedoraproject.org> - 1.22-9
 - Do not lowercase hostnames with custom-protocol (rhbz 1567862)
 - upstream: https://github.com/urllib3/urllib3/issues/1267
