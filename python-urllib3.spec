@@ -1,4 +1,3 @@
-%global _without_tests 1
 %global srcname urllib3
 
 # When bootstrapping Python, we cannot test this yet
@@ -6,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.23
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -140,6 +139,9 @@ py.test-3
 
 
 %changelog
+* Mon Jun 18 2018 Miro Hrončok <mhroncok@redhat.com> - 1.23-3
+- Rebuilt for Python 3.7
+
 * Thu Jun 14 2018 Miro Hrončok <mhroncok@redhat.com> - 1.23-2
 - Bootstrap for Python 3.7
 
