@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.23
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -39,7 +39,6 @@ BuildRequires:  python2-nose-exclude
 BuildRequires:  python2-coverage
 BuildRequires:  python2-mock
 BuildRequires:  python2-six
-BuildRequires:  python2-psutil
 BuildRequires:  python2-pysocks
 BuildRequires:  python2-pytest
 BuildRequires:  python2-tornado
@@ -58,7 +57,6 @@ BuildRequires:  python3-nose
 BuildRequires:  python3-mock
 BuildRequires:  python3-six
 BuildRequires:  python3-pysocks
-BuildRequires:  python3-psutil
 BuildRequires:  python3-pytest
 BuildRequires:  python3-tornado
 %endif
@@ -139,6 +137,9 @@ py.test-3
 
 
 %changelog
+* Wed Jun 20 2018 Lumír Balhar <lbalhar@redhat.com> - 1.23-4
+- Removed unneeded dependency python[23]-psutil
+
 * Mon Jun 18 2018 Miro Hrončok <mhroncok@redhat.com> - 1.23-3
 - Rebuilt for Python 3.7
 
