@@ -5,14 +5,14 @@
 
 Name:           python-%{srcname}
 Version:        1.24.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
 URL:            https://github.com/urllib3/urllib3
 Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
 # Unbundle ssl_match_hostname since we depend on it
-Patch0:         Unbundle-ssl_match_hostname-backport.patch
+Source1:        ssl_match_hostname_py3.py
 BuildArch:      noarch
 
 %description
@@ -96,17 +96,22 @@ rm -f test/test_no_ssl.py
 
 # Unbundle the Python 2 build
 rm -rf %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py*
+rm -rf %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname/
 
 mkdir -p %{buildroot}/%{python2_sitelib}/urllib3/packages/
 ln -s %{python2_sitelib}/six.py %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py
 ln -s %{python2_sitelib}/six.pyc %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyc
 ln -s %{python2_sitelib}/six.pyo %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyo
+ln -s %{python2_sitelib}/backports/ssl_match_hostname \
+      %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname
 
 # Unbundle the Python 3 build
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py*
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/six*
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/
 
 mkdir -p %{buildroot}/%{python3_sitelib}/urllib3/packages/
+cp -a %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
 ln -s %{python3_sitelib}/six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
 ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.opt-1.pyc \
       %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
@@ -138,6 +143,9 @@ popd
 
 
 %changelog
+* Tue Nov 13 2018 Jeremy Cline <jeremy@jcline.org> - 1.24.1-2
+- Adjust unbundling of ssl_match_hostname
+
 * Mon Oct 29 2018 Jeremy Cline <jeremy@jcline.org> - 1.24.1-1
 - Update to v1.24.1
 
