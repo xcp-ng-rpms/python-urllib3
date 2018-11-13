@@ -4,15 +4,15 @@
 %bcond_without tests
 
 Name:           python-%{srcname}
-Version:        1.23
-Release:        4%{?dist}
+Version:        1.24.1
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
-URL:            https://github.com/shazow/urllib3
+URL:            https://github.com/urllib3/urllib3
 Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
-# Used with Python 3.5+
-Source1:        ssl_match_hostname_py3.py
+# Unbundle ssl_match_hostname since we depend on it
+Patch0:         Unbundle-ssl_match_hostname-backport.patch
 BuildArch:      noarch
 
 %description
@@ -34,6 +34,7 @@ Requires:       python2-pysocks
 
 BuildRequires:  python2-devel
 %if %{with tests}
+BuildRequires:  python2-backports-ssl_match_hostname
 BuildRequires:  python2-nose
 BuildRequires:  python2-nose-exclude
 BuildRequires:  python2-coverage
@@ -70,7 +71,7 @@ Python3 HTTP module with connection pooling and file POST abilities.
 
 
 %prep
-%setup -q -n %{srcname}-%{version}
+%autosetup -p1 -n %{srcname}-%{version}
 # Drop the dummyserver tests in koji.  They fail there in real builds, but not
 # in scratch builds (weird).
 rm -rf test/with_dummyserver/
@@ -79,6 +80,10 @@ rm -rf test/appengine/
 # Lots of these tests started failing, even for old versions, so it has something
 # to do with Fedora in particular. They don't fail in upstream build infrastructure
 rm -rf test/contrib/
+
+# Tests for Python built without SSL, but Fedora builds with SSL. These tests
+# fail when combined with the unbundling of backports-ssl_match_hostname
+rm -f test/test_no_ssl.py
 
 %build
 %py2_build
@@ -91,34 +96,30 @@ rm -rf test/contrib/
 
 # Unbundle the Python 2 build
 rm -rf %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py*
-rm -rf %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname/
 
 mkdir -p %{buildroot}/%{python2_sitelib}/urllib3/packages/
-ln -s ../../six.py %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py
-ln -s ../../six.pyc %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyc
-ln -s ../../six.pyo %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyo
-
-ln -s ../../backports/ssl_match_hostname %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname
+ln -s %{python2_sitelib}/six.py %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py
+ln -s %{python2_sitelib}/six.pyc %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyc
+ln -s %{python2_sitelib}/six.pyo %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyo
 
 # Unbundle the Python 3 build
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py*
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/six*
-rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/
 
 mkdir -p %{buildroot}/%{python3_sitelib}/urllib3/packages/
-ln -s ../../six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
-ln -s ../../../__pycache__/six.cpython-%{python3_version_nodots}.opt-1.pyc %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
-ln -s ../../../__pycache__/six.cpython-%{python3_version_nodots}.pyc %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
-# urllib3 requires Python 3.5 to use the standard library's match_hostname,
-# which we ship in Fedora 26, so we can safely replace the bundled version with
-# this stub which imports the necessary objects.
-cp %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
+ln -s %{python3_sitelib}/six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
+ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.opt-1.pyc \
+      %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
+ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
+      %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
 
 
 %if %{with tests}
 %check
-py.test
-py.test-3
+pushd test
+PYTHONPATH=%{buildroot}%{python2_sitelib}:%{python2_sitelib} %{__python2} -m pytest -v
+PYTHONPATH=%{buildroot}%{python3_sitelib}:%{python3_sitelib} %{__python3} -m pytest -v
+popd
 %endif
 
 
@@ -137,6 +138,9 @@ py.test-3
 
 
 %changelog
+* Mon Oct 29 2018 Jeremy Cline <jeremy@jcline.org> - 1.24.1-1
+- Update to v1.24.1
+
 * Wed Jun 20 2018 Lumír Balhar <lbalhar@redhat.com> - 1.23-4
 - Removed unneeded dependency python[23]-psutil
 
