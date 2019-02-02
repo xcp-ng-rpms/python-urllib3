@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.24.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -143,6 +143,9 @@ popd
 
 
 %changelog
+* Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.24.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Tue Nov 13 2018 Jeremy Cline <jeremy@jcline.org> - 1.24.1-2
 - Adjust unbundling of ssl_match_hostname
 
