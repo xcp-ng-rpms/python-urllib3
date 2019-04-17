@@ -4,8 +4,8 @@
 %bcond_without tests
 
 Name:           python-%{srcname}
-Version:        1.24.1
-Release:        3%{?dist}
+Version:        1.24.2
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
