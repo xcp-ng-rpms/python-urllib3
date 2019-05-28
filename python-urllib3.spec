@@ -4,7 +4,7 @@
 %bcond_without tests
 
 Name:           python-%{srcname}
-Version:        1.24.2
+Version:        1.25.3
 Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
@@ -14,6 +14,9 @@ Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
 # Unbundle ssl_match_hostname since we depend on it
 Source1:        ssl_match_hostname_py3.py
 BuildArch:      noarch
+
+# Merged upstream, compatibility with latest pytest
+Patch0:         1614.patch
 
 %description
 Python HTTP module with connection pooling and file POST abilities.
@@ -29,6 +32,7 @@ Requires:       python2-six
 Requires:       python2-backports-ssl_match_hostname
 
 # Secure extra requirements
+Requires:       python2-idna
 Requires:       python2-ipaddress
 Requires:       python2-pysocks
 
@@ -43,6 +47,7 @@ BuildRequires:  python2-six
 BuildRequires:  python2-pysocks
 BuildRequires:  python2-pytest
 BuildRequires:  python2-tornado
+BuildRequires:  python2-idna
 %endif
 
 %description -n python2-%{srcname}
@@ -60,9 +65,11 @@ BuildRequires:  python3-six
 BuildRequires:  python3-pysocks
 BuildRequires:  python3-pytest
 BuildRequires:  python3-tornado
+BuildRequires:  python3-idna
 %endif
 
 Requires:       ca-certificates
+Requires:       python3-idna
 Requires:       python3-six
 Requires:       python3-pysocks
 
@@ -143,6 +150,9 @@ popd
 
 
 %changelog
+* Tue May 28 2019 Jeremy Cline <jcline@redhat.com> - 1.25.3-1
+- Update to 1.25.3
+
 * Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.24.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
