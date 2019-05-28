@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.25.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -37,18 +37,6 @@ Requires:       python2-ipaddress
 Requires:       python2-pysocks
 
 BuildRequires:  python2-devel
-%if %{with tests}
-BuildRequires:  python2-backports-ssl_match_hostname
-BuildRequires:  python2-nose
-BuildRequires:  python2-nose-exclude
-BuildRequires:  python2-coverage
-BuildRequires:  python2-mock
-BuildRequires:  python2-six
-BuildRequires:  python2-pysocks
-BuildRequires:  python2-pytest
-BuildRequires:  python2-tornado
-BuildRequires:  python2-idna
-%endif
 
 %description -n python2-%{srcname}
 Python2 HTTP module with connection pooling and file POST abilities.
@@ -129,7 +117,6 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 %if %{with tests}
 %check
 pushd test
-PYTHONPATH=%{buildroot}%{python2_sitelib}:%{python2_sitelib} %{__python2} -m pytest -v
 PYTHONPATH=%{buildroot}%{python3_sitelib}:%{python3_sitelib} %{__python3} -m pytest -v
 popd
 %endif
@@ -150,6 +137,9 @@ popd
 
 
 %changelog
+* Tue May 28 2019 Jeremy Cline <jcline@redhat.com> - 1.25.3-2
+- Drop the Python 2 tests since Tornado is going away
+
 * Tue May 28 2019 Jeremy Cline <jcline@redhat.com> - 1.25.3-1
 - Update to 1.25.3
 
