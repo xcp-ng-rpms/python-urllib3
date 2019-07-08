@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.25.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -17,6 +17,10 @@ BuildArch:      noarch
 
 # Merged upstream, compatibility with latest pytest
 Patch0:         1614.patch
+
+# Merged upstream, set RECENT_DATE not to be older than 2 years
+# https://bugzilla.redhat.com/show_bug.cgi?id=1727796
+Patch1:         1645.patch
 
 %description
 Python HTTP module with connection pooling and file POST abilities.
@@ -137,6 +141,9 @@ popd
 
 
 %changelog
+* Mon Jul 08 2019 Miro Hrončok <mhroncok@redhat.com> - 1.25.3-3
+- Set RECENT_DATE not to be older than 2 years (#1727796)
+
 * Tue May 28 2019 Jeremy Cline <jcline@redhat.com> - 1.25.3-2
 - Drop the Python 2 tests since Tornado is going away
 
