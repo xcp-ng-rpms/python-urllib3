@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.25.3
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -141,6 +141,9 @@ popd
 
 
 %changelog
+* Thu Oct 03 2019 Miro Hrončok <mhroncok@redhat.com> - 1.25.3-7
+- Rebuilt for Python 3.8.0rc1 (#1748018)
+
 * Sun Aug 18 2019 Miro Hrončok <mhroncok@redhat.com> - 1.25.3-6
 - Rebuilt for Python 3.8
 
