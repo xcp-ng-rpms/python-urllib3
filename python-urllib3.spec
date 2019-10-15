@@ -34,6 +34,7 @@ Requires:       python2-ipaddress
 Requires:       python2-pysocks
 
 BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
 
 %description -n python2-%{srcname}
 Python2 HTTP module with connection pooling and file POST abilities.
