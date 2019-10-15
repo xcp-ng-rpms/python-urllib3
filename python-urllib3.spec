@@ -4,8 +4,8 @@
 %bcond_without tests
 
 Name:           python-%{srcname}
-Version:        1.25.3
-Release:        7%{?dist}
+Version:        1.25.6
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -14,13 +14,6 @@ Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
 # Unbundle ssl_match_hostname since we depend on it
 Source1:        ssl_match_hostname_py3.py
 BuildArch:      noarch
-
-# Merged upstream, compatibility with latest pytest
-Patch0:         1614.patch
-
-# Merged upstream, set RECENT_DATE not to be older than 2 years
-# https://bugzilla.redhat.com/show_bug.cgi?id=1727796
-Patch1:         1645.patch
 
 %description
 Python HTTP module with connection pooling and file POST abilities.
@@ -141,6 +134,9 @@ popd
 
 
 %changelog
+* Tue Oct 15 2019 Jeremy Cline <jcline@redhat.com> - 1.25.6-1
+- Update to v1.25.6
+
 * Thu Oct 03 2019 Miro Hrončok <mhroncok@redhat.com> - 1.25.3-7
 - Rebuilt for Python 3.8.0rc1 (#1748018)
 
