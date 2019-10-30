@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.25.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -45,6 +45,24 @@ Python3 HTTP module with connection pooling and file POST abilities.
 
 %prep
 %autosetup -p1 -n %{srcname}-%{version}
+# Make sure that the RECENT_DATE value doesn't get too far behind what the current date is.
+# RECENT_DATE must not be older that 2 years from the build time, or else test_recent_date
+# (from test/test_connection.py) would fail. However, it shouldn't be to close to the build time either,
+# since a user's system time could be set to a little in the past from what build time is (because of timezones,
+# corner cases, etc). As stated in the comment in src/urllib3/connection.py:
+#   When updating RECENT_DATE, move it to within two years of the current date,
+#   and not less than 6 months ago.
+#   Example: if Today is 2018-01-01, then RECENT_DATE should be any date on or
+#   after 2016-01-01 (today - 2 years) AND before 2017-07-01 (today - 6 months)
+# There is also a test_ssl_wrong_system_time test (from test/with_dummyserver/test_https.py) that tests if
+# user's system time isn't set as too far in the past, because it could lead to SSL verification errors.
+# That is why we need RECENT_DATE to be set at most 2 years ago (or else test_ssl_wrong_system_time would
+# result in false positive), but before at least 6 month ago (so this test could tolerate user's system time being
+# set to some time in the past, but not to far away from the present).
+# Next few lines update RECENT_DATE dynamically.
+recent_date=$(date --date "7 month ago" +"%Y, %_m, %_d")
+sed -i "s/^RECENT_DATE = datetime.date(.*)/RECENT_DATE = datetime.date($recent_date)/" src/urllib3/connection.py
+
 # Drop the dummyserver tests in koji.  They fail there in real builds, but not
 # in scratch builds (weird).
 rm -rf test/with_dummyserver/
@@ -95,6 +113,9 @@ popd
 
 
 %changelog
+* Tue Jan 05 2021 Anna Khaitovich <akhaitov@redhat.com> - 1.25.10-2
+- Update RECENT_DATE dynamically
+
 * Sun Sep 27 2020 Kevin Fenzi <kevin@scrye.com> - 1.25.10-1
 - Update to 1.25.10. Fixed bug #1824900
 
