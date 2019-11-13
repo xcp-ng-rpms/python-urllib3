@@ -51,6 +51,7 @@ BuildRequires:  python3-six
 BuildRequires:  python3-pysocks
 BuildRequires:  python3-pytest
 BuildRequires:  python3-tornado
+BuildRequires:  python3-trustme
 BuildRequires:  python3-idna
 %endif
 
