@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.25.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -17,28 +17,6 @@ BuildArch:      noarch
 
 %description
 Python HTTP module with connection pooling and file POST abilities.
-
-%package -n python2-%{srcname}
-Summary:        Python2 HTTP library with thread-safe connection pooling and file post
-%{?python_provide:%python_provide python2-%{srcname}}
-
-Requires:       ca-certificates
-
-# Previously bundled things:
-Requires:       python2-six
-Requires:       python2-backports-ssl_match_hostname
-
-# Secure extra requirements
-Requires:       python2-idna
-Requires:       python2-ipaddress
-Requires:       python2-pysocks
-
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
-
-%description -n python2-%{srcname}
-Python2 HTTP module with connection pooling and file POST abilities.
-
 
 %package -n python3-%{srcname}
 Summary:        Python3 HTTP library with thread-safe connection pooling and file post
@@ -80,24 +58,11 @@ rm -rf test/contrib/
 rm -f test/test_no_ssl.py
 
 %build
-%py2_build
 %py3_build
 
 
 %install
-%py2_install
 %py3_install
-
-# Unbundle the Python 2 build
-rm -rf %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py*
-rm -rf %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname/
-
-mkdir -p %{buildroot}/%{python2_sitelib}/urllib3/packages/
-ln -s %{python2_sitelib}/six.py %{buildroot}/%{python2_sitelib}/urllib3/packages/six.py
-ln -s %{python2_sitelib}/six.pyc %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyc
-ln -s %{python2_sitelib}/six.pyo %{buildroot}/%{python2_sitelib}/urllib3/packages/six.pyo
-ln -s %{python2_sitelib}/backports/ssl_match_hostname \
-      %{buildroot}/%{python2_sitelib}/urllib3/packages/ssl_match_hostname
 
 # Unbundle the Python 3 build
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py*
@@ -121,13 +86,6 @@ popd
 %endif
 
 
-%files -n python2-%{srcname}
-%license LICENSE.txt
-%doc CHANGES.rst README.rst CONTRIBUTORS.txt
-%{python2_sitelib}/urllib3/
-%{python2_sitelib}/urllib3-*.egg-info
-
-
 %files -n python3-%{srcname}
 %license LICENSE.txt
 %doc CHANGES.rst README.rst CONTRIBUTORS.txt
@@ -136,6 +94,10 @@ popd
 
 
 %changelog
+* Mon Nov 18 2019 Miro Hrončok <mhroncok@redhat.com> - 1.25.7-2
+- Subpackage python2-urllib3 has been removed
+  See https://fedoraproject.org/wiki/Changes/Mass_Python_2_Package_Removal
+
 * Tue Oct 15 2019 Jeremy Cline <jcline@redhat.com> - 1.25.6-1
 - Update to v1.25.6
 
