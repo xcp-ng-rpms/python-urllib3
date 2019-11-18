@@ -22,6 +22,7 @@ Python HTTP module with connection pooling and file POST abilities.
 Summary:        Python3 HTTP library with thread-safe connection pooling and file post
 
 BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
 %if %{with tests}
 BuildRequires:  python3-nose
 BuildRequires:  python3-mock
@@ -90,7 +91,7 @@ popd
 %license LICENSE.txt
 %doc CHANGES.rst README.rst CONTRIBUTORS.txt
 %{python3_sitelib}/urllib3/
-%{python3_sitelib}/urllib3-*.egg-info
+%{python3_sitelib}/urllib3-*.egg-info/
 
 
 %changelog
