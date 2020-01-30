@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.25.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -95,6 +95,9 @@ popd
 
 
 %changelog
+* Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.25.7-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Mon Nov 18 2019 Miro Hrončok <mhroncok@redhat.com> - 1.25.7-2
 - Subpackage python2-urllib3 has been removed
   See https://fedoraproject.org/wiki/Changes/Mass_Python_2_Package_Removal
