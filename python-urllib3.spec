@@ -4,8 +4,8 @@
 %bcond_without tests
 
 Name:           python-%{srcname}
-Version:        1.25.7
-Release:        3%{?dist}
+Version:        1.25.8
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -95,6 +95,9 @@ popd
 
 
 %changelog
+* Sun Mar 22 2020 Carl George <carl@george.computer> - 1.25.8-1
+- Latest upstream rhbz#1771186
+
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.25.7-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
