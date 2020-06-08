@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.26.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -37,7 +37,7 @@ BuildRequires:  python3-idna
 
 Requires:       ca-certificates
 Requires:       python3-idna
-Requires:       python3-six
+Requires:       python3-six >= 1.16.0
 Requires:       python3-pysocks
 
 %description -n python3-%{srcname}
@@ -117,6 +117,9 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 
 
 %changelog
+* Wed Jun 30 2021 Yatin Karel <ykarel@redhat.com> - 1.26.5-2
+- Update minimal requirement of six to >= 1.16.0
+
 * Wed Jun 16 2021 Karolina Surma <ksurma@redhat.com> - 1.26.5-1
 - Update to 1.26.5
 - Fixes rhbz#1965056
