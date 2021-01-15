@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.25.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -24,8 +24,6 @@ Summary:        Python3 HTTP library with thread-safe connection pooling and fil
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 %if %{with tests}
-BuildRequires:  python3-nose
-BuildRequires:  python3-mock
 BuildRequires:  python3-six
 BuildRequires:  python3-pysocks
 BuildRequires:  python3-pytest
@@ -76,6 +74,11 @@ rm -rf test/contrib/
 # fail when combined with the unbundling of backports-ssl_match_hostname
 rm -f test/test_no_ssl.py
 
+# Use the standard library instead of a backport
+sed -i -e 's/^import mock/from unittest import mock/' \
+       -e 's/^from mock import /from unittest.mock import /' \
+    test/*.py docs/conf.py
+
 %build
 %py3_build
 
@@ -113,6 +116,10 @@ popd
 
 
 %changelog
+* Fri Jan 15 2021 Miro Hrončok <mhroncok@redhat.com> - 1.25.10-3
+- Drop redundant BuildRequires for nose
+- Instead of the mock backport, use unittest.mock from the standard library
+
 * Tue Jan 05 2021 Anna Khaitovich <akhaitov@redhat.com> - 1.25.10-2
 - Update RECENT_DATE dynamically
 
