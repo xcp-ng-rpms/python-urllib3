@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.25.10
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -116,6 +116,9 @@ popd
 
 
 %changelog
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.25.10-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Fri Jan 15 2021 Miro Hrončok <mhroncok@redhat.com> - 1.25.10-3
 - Drop redundant BuildRequires for nose
 - Instead of the mock backport, use unittest.mock from the standard library
