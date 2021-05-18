@@ -4,15 +4,13 @@
 %bcond_without tests
 
 Name:           python-%{srcname}
-Version:        1.25.10
-Release:        4%{?dist}
+Version:        1.26.4
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
 URL:            https://github.com/urllib3/urllib3
 Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
-# Unbundle ssl_match_hostname since we depend on it
-Source1:        ssl_match_hostname_py3.py
 BuildArch:      noarch
 
 %description
@@ -24,9 +22,12 @@ Summary:        Python3 HTTP library with thread-safe connection pooling and fil
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 %if %{with tests}
+BuildRequires:  python3-dateutil
 BuildRequires:  python3-six
 BuildRequires:  python3-pysocks
 BuildRequires:  python3-pytest
+BuildRequires:  python3-pytest-freezegun
+BuildRequires:  python3-pytest-timeout
 BuildRequires:  python3-tornado
 BuildRequires:  python3-trustme
 BuildRequires:  python3-idna
@@ -87,12 +88,12 @@ sed -i -e 's/^import mock/from unittest import mock/' \
 %py3_install
 
 # Unbundle the Python 3 build
-rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py*
-rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/six*
-rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/six.*
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/_implementation.py
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/__pycache__/_implementation.*
 
 mkdir -p %{buildroot}/%{python3_sitelib}/urllib3/packages/
-cp -a %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
 ln -s %{python3_sitelib}/six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
 ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.opt-1.pyc \
       %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
@@ -102,9 +103,7 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 
 %if %{with tests}
 %check
-pushd test
-PYTHONPATH=%{buildroot}%{python3_sitelib}:%{python3_sitelib} %{__python3} -m pytest -v
-popd
+%pytest -v
 %endif
 
 
@@ -116,6 +115,10 @@ popd
 
 
 %changelog
+* Tue May 18 2021 Miro Hrončok <mhroncok@redhat.com> - 1.26.4-1
+- Update to 1.26.4
+- Fixes rhbz#1889391
+
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.25.10-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
