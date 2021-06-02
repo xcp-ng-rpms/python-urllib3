@@ -1,3 +1,4 @@
+%global _without_tests 1
 %global srcname urllib3
 
 # When bootstrapping Python, we cannot test this yet
@@ -5,7 +6,7 @@
 
 Name:           python-%{srcname}
 Version:        1.26.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -115,6 +116,9 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 
 
 %changelog
+* Wed Jun 02 2021 Python Maint <python-maint@redhat.com> - 1.26.4-2
+- Bootstrap for Python 3.10
+
 * Tue May 18 2021 Miro Hrončok <mhroncok@redhat.com> - 1.26.4-1
 - Update to 1.26.4
 - Fixes rhbz#1889391
