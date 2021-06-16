@@ -11,6 +11,8 @@ Summary:        Python HTTP library with thread-safe connection pooling and file
 License:        MIT
 URL:            https://github.com/urllib3/urllib3
 Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
+# Unbundle ssl_match_hostname since we depend on it
+Source1:        ssl_match_hostname_py3.py
 BuildArch:      noarch
 
 %description
@@ -90,10 +92,10 @@ sed -i -e 's/^import mock/from unittest import mock/' \
 # Unbundle the Python 3 build
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/six.*
-rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/_implementation.py
-rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/__pycache__/_implementation.*
+rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname/
 
 mkdir -p %{buildroot}/%{python3_sitelib}/urllib3/packages/
+cp -a %{SOURCE1} %{buildroot}/%{python3_sitelib}/urllib3/packages/ssl_match_hostname.py
 ln -s %{python3_sitelib}/six.py %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
 ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.opt-1.pyc \
       %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
