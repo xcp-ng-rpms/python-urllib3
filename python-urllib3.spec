@@ -4,8 +4,8 @@
 %bcond_without tests
 
 Name:           python-%{srcname}
-Version:        1.26.5
-Release:        2%{?dist}
+Version:        1.26.6
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -111,12 +111,16 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 
 %files -n python3-%{srcname}
 %license LICENSE.txt
-%doc CHANGES.rst README.rst CONTRIBUTORS.txt
+%doc CHANGES.rst README.rst
 %{python3_sitelib}/urllib3/
 %{python3_sitelib}/urllib3-*.egg-info/
 
 
 %changelog
+* Sun Jul 11 2021 Kevin Fenzi <kevin@scrye.com> - 1.26.6-1
+- Update to 1.26.1. Fixes rhbz#1976190
+- Fix FTBFS. Fixes rhbz#1966120
+
 * Wed Jun 30 2021 Yatin Karel <ykarel@redhat.com> - 1.26.5-2
 - Update minimal requirement of six to >= 1.16.0
 
