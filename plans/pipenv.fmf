@@ -1,7 +1,0 @@
-summary: Run pipenv tests
-discover:
-    how: fmf
-    url: https://src.fedoraproject.org/rpms/pipenv/
-execute:
-    how: tmt
-
