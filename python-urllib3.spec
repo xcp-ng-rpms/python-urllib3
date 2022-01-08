@@ -4,8 +4,8 @@
 %bcond_without tests
 
 Name:           python-%{srcname}
-Version:        1.26.7
-Release:        2%{?dist}
+Version:        1.26.8
+Release:        1%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -113,6 +113,9 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 
 
 %changelog
+* Sat Jan 08 2022 Kevin Fenzi <kevin@scrye.com> - 1.26.8-1
+- Update to 1.26.8. Fixes rhbz#2038246
+
 * Tue Jan 04 2022 Adam Williamson <awilliam@redhat.com> - 1.26.7-2
 - Stop unbundling ssl.match_hostname, it's deprecated upstream (#2009550)
 
