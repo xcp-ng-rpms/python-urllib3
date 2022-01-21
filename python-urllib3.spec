@@ -5,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.26.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -113,6 +113,9 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 
 
 %changelog
+* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.26.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
 * Sat Jan 08 2022 Kevin Fenzi <kevin@scrye.com> - 1.26.8-1
 - Update to 1.26.8. Fixes rhbz#2038246
 
