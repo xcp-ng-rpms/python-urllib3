@@ -1,4 +1,3 @@
-%global _without_tests 1
 %global srcname urllib3
 
 # When bootstrapping Python, we cannot test this yet
@@ -6,7 +5,7 @@
 
 Name:           python-%{srcname}
 Version:        1.26.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
 License:        MIT
@@ -114,6 +113,9 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 
 
 %changelog
+* Tue Jun 14 2022 Python Maint <python-maint@redhat.com> - 1.26.9-3
+- Rebuilt for Python 3.11
+
 * Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 1.26.9-2
 - Bootstrap for Python 3.11
 
