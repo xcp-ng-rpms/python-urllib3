@@ -10,9 +10,10 @@
 
 Name:           python-%{srcname}
 Version:        1.26.12
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python HTTP library with thread-safe connection pooling and file post
 
+# SPDX
 License:        MIT
 URL:            https://github.com/urllib3/urllib3
 Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
@@ -123,6 +124,9 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 
 
 %changelog
+* Thu May 18 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 1.26.12-5
+- Confirm the License is SPDX MIT
+
 * Tue May 16 2023 Yaakov Selkowitz <yselkowi@redhat.com> - 1.26.12-4
 - Disable tests by default in RHEL builds
 
