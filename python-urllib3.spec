@@ -1,5 +1,3 @@
-%global srcname urllib3
-
 # When bootstrapping Python, we cannot test this yet
 # RHEL does not include the test dependencies
 %if 0%{?rhel}
@@ -8,7 +6,7 @@
 %bcond_without tests
 %endif
 
-Name:           python-%{srcname}
+Name:           python-urllib3
 Version:        1.26.12
 Release:        5%{?dist}
 Summary:        HTTP library with thread-safe connection pooling, file post, and more
@@ -16,13 +14,42 @@ Summary:        HTTP library with thread-safe connection pooling, file post, and
 # SPDX
 License:        MIT
 URL:            https://github.com/urllib3/urllib3
-Source:         %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
+Source:         %{url}/archive/%{version}/urllib3-%{version}.tar.gz
 
 # Accomodate the test to the changed behavior of SSLContext.shared_ciphers() in CPython
 # See: https://github.com/python/cpython/issues/96931
 Patch:          https://github.com/urllib3/urllib3/commit/4855d71.patch
 
 BuildArch:      noarch
+
+BuildRequires:  python3-devel
+
+%if %{with tests}
+# Test dependencies are listed only in dev-requirements.txt. Because there are
+# linters and coverage tools mixed in, and exact versions are pinned, we resort
+# to manual listing.
+# mock==3.0.5: patched out in %%prep
+# coverage~=6.0;python_version>="3.6": omitted linter/coverage tool
+# tornado==6.1.0;python_version>="3.6"
+BuildRequires:  %{py3_dist tornado} >= 6.1
+# PySocks==1.7.1
+BuildRequires:  %{py3_dist PySocks} >= 1.7.1
+# win-inet-pton==1.1.0: Windows-only workaround
+# pytest==6.2.4; python_version>="3.10"
+BuildRequires:  %{py3_dist pytest} >= 6.2.4
+# pytest-timeout==1.4.2
+BuildRequires:  %{py3_dist pytest-timeout} >= 1.4.2
+# pytest-freezegun==0.4.2
+BuildRequires:  %{py3_dist pytest-freezegun} >= 0.4.2
+# flaky==3.7.0: not really required
+# trustme==0.7.0
+BuildRequires:  %{py3_dist trustme} >= 0.7
+# cryptography==38.0.3;python_version>="3.6": associated with the deprecated
+#                                             “secure” extra
+# python-dateutil==2.8.1
+BuildRequires:  %{py3_dist python-dateutil} >= 2.8.1
+# gcp-devrel-py-tools==0.0.16: not used in offline testing
+%endif
 
 %global _description %{expand:
 urllib3 is a powerful, user-friendly HTTP client for Python. urllib3 brings
@@ -40,50 +67,36 @@ many critical features that are missing from the Python standard libraries:
 %description %{_description}
 
 
-%package -n python3-%{srcname}
+%package -n python3-urllib3
 Summary:        %{summary}
 
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-
-# “brotli” extra (BuildRequire to avoid failure to install the extra metapackage)
-BuildRequires:  %{py3_dist brotli} >= 1.0.9
-
-# “socks” extra (BuildRequire to avoid failure to install the extra metapackage)
-BuildRequires:  (%{py3_dist PySocks} >= 1.5.6 with %{py3_dist PySocks} < 2)
-
-%if %{with tests}
-BuildRequires:  python3-dateutil
-BuildRequires:  python3-six
-BuildRequires:  python3-pysocks
-BuildRequires:  python3-pytest
-BuildRequires:  python3-pytest-freezegun
-BuildRequires:  python3-pytest-timeout
-BuildRequires:  python3-tornado
-BuildRequires:  python3-trustme
-BuildRequires:  python3-idna
-%endif
-
+BuildRequires:  ca-certificates
 Requires:       ca-certificates
-Requires:       python3-idna
+
+# There has historically been a manual hard dependency on python3-idna.
+BuildRequires:  %{py3_dist idna}
+Requires:       %{py3_dist idna}
+
 # Unbundled
-Requires:       python3-six >= 1.16.0
+BuildRequires:  %{py3_dist six} >= 1.16
+Requires:       %{py3_dist six} >= 1.16
+
 # There has historically been a manual hard dependency on python3-pysocks;
 # since bringing it in is the sole function of python3-urllib3+socks, we just
 # depend on that instead.
-Requires:       python3-%{srcname}+socks = %{version}-%{release}
+Requires:       python3-urllib3+socks = %{version}-%{release}
 
-%description -n python3-%{srcname} %{_description}
+%description -n python3-urllib3 %{_description}
 
 
 # We do NOT package the “secure” extra because it is deprecated; see:
 # “Deprecate the pyOpenSSL TLS implementation and [secure] extra”
 # https://github.com/urllib3/urllib3/issues/2680
-%python_extras_subpkg -n python3-%{srcname} -i %{python3_sitelib}/*.egg-info brotli socks
+%pyproject_extras_subpkg -n python3-urllib3 brotli socks
 
 
 %prep
-%autosetup -p1 -n %{srcname}-%{version}
+%autosetup -p1 -n urllib3-%{version}
 # Make sure that the RECENT_DATE value doesn't get too far behind what the current date is.
 # RECENT_DATE must not be older that 2 years from the build time, or else test_recent_date
 # (from test/test_connection.py) would fail. However, it shouldn't be to close to the build time either,
@@ -108,12 +121,18 @@ sed -i -e 's/^import mock/from unittest import mock/' \
     test/*.py docs/conf.py
 
 
+%generate_buildrequires
+# Generate BR’s from packaged extras even when tests are disabled, to ensure
+# the extras metapackages are installable if the build succeeds.
+%pyproject_buildrequires -x brotli,socks
+
+
 %build
-%py3_build
+%pyproject_wheel
 
 
 %install
-%py3_install
+%pyproject_install
 
 # Unbundle the Python 3 build
 rm -rf %{buildroot}/%{python3_sitelib}/urllib3/packages/six.py
@@ -125,6 +144,8 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.opt-1
       %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
 ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
       %{buildroot}/%{python3_sitelib}/urllib3/packages/__pycache__/
+
+%pyproject_save_files urllib3
 
 
 %if %{with tests}
@@ -144,11 +165,8 @@ ignore="${ignore-} --ignore=test/test_no_ssl.py"
 %endif
 
 
-%files -n python3-%{srcname}
-%license LICENSE.txt
+%files -n python3-urllib3 -f %{pyproject_files}
 %doc CHANGES.rst README.rst
-%{python3_sitelib}/urllib3/
-%{python3_sitelib}/urllib3-*.egg-info/
 
 
 %changelog
@@ -156,6 +174,7 @@ ignore="${ignore-} --ignore=test/test_no_ssl.py"
 - Confirm the License is SPDX MIT
 - Update Summary and description based on upstream
 - Add metapackages for brotli and socks extras
+- Port to pyproject-rpm-macros
 
 * Tue May 16 2023 Yaakov Selkowitz <yselkowi@redhat.com> - 1.26.12-4
 - Disable tests by default in RHEL builds
