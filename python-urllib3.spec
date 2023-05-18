@@ -7,8 +7,8 @@
 %endif
 
 Name:           python-urllib3
-Version:        1.26.12
-Release:        5%{?dist}
+Version:        1.26.15
+Release:        1%{?dist}
 Summary:        HTTP library with thread-safe connection pooling, file post, and more
 
 # SPDX
@@ -170,6 +170,9 @@ ignore="${ignore-} --ignore=test/test_no_ssl.py"
 
 
 %changelog
+* Thu May 18 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 1.26.15-1
+- Update to 1.26.15
+
 * Thu May 18 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 1.26.12-5
 - Confirm the License is SPDX MIT
 - Update Summary and description based on upstream
