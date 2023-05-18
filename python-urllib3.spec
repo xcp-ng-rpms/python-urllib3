@@ -45,6 +45,13 @@ Summary:        %{summary}
 
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
+
+# “brotli” extra (BuildRequire to avoid failure to install the extra metapackage)
+BuildRequires:  %{py3_dist brotli} >= 1.0.9
+
+# “socks” extra (BuildRequire to avoid failure to install the extra metapackage)
+BuildRequires:  (%{py3_dist PySocks} >= 1.5.6 with %{py3_dist PySocks} < 2)
+
 %if %{with tests}
 BuildRequires:  python3-dateutil
 BuildRequires:  python3-six
@@ -59,10 +66,20 @@ BuildRequires:  python3-idna
 
 Requires:       ca-certificates
 Requires:       python3-idna
+# Unbundled
 Requires:       python3-six >= 1.16.0
-Requires:       python3-pysocks
+# There has historically been a manual hard dependency on python3-pysocks;
+# since bringing it in is the sole function of python3-urllib3+socks, we just
+# depend on that instead.
+Requires:       python3-%{srcname}+socks = %{version}-%{release}
 
 %description -n python3-%{srcname} %{_description}
+
+
+# We do NOT package the “secure” extra because it is deprecated; see:
+# “Deprecate the pyOpenSSL TLS implementation and [secure] extra”
+# https://github.com/urllib3/urllib3/issues/2680
+%python_extras_subpkg -n python3-%{srcname} -i %{python3_sitelib}/*.egg-info brotli socks
 
 
 %prep
@@ -139,6 +156,7 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 * Thu May 18 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 1.26.12-5
 - Confirm the License is SPDX MIT
 - Update Summary and description based on upstream
+- Add metapackages for brotli and socks extras
 
 * Tue May 16 2023 Yaakov Selkowitz <yselkowi@redhat.com> - 1.26.12-4
 - Disable tests by default in RHEL builds
