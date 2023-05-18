@@ -16,7 +16,7 @@ Summary:        HTTP library with thread-safe connection pooling, file post, and
 # SPDX
 License:        MIT
 URL:            https://github.com/urllib3/urllib3
-Source0:        %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
+Source:         %{url}/archive/%{version}/%{srcname}-%{version}.tar.gz
 
 # Accomodate the test to the changed behavior of SSLContext.shared_ciphers() in CPython
 # See: https://github.com/python/cpython/issues/96931
