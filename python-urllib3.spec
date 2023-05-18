@@ -11,7 +11,7 @@
 Name:           python-%{srcname}
 Version:        1.26.12
 Release:        5%{?dist}
-Summary:        Python HTTP library with thread-safe connection pooling and file post
+Summary:        HTTP library with thread-safe connection pooling, file post, and more
 
 # SPDX
 License:        MIT
@@ -24,11 +24,24 @@ Patch:          https://github.com/urllib3/urllib3/commit/4855d71.patch
 
 BuildArch:      noarch
 
-%description
-Python HTTP module with connection pooling and file POST abilities.
+%global _description %{expand:
+urllib3 is a powerful, user-friendly HTTP client for Python. urllib3 brings
+many critical features that are missing from the Python standard libraries:
+
+  • Thread safety.
+  • Connection pooling.
+  • Client-side SSL/TLS verification.
+  • File uploads with multipart encoding.
+  • Helpers for retrying requests and dealing with HTTP redirects.
+  • Support for gzip, deflate, brotli, and zstd encoding.
+  • Proxy support for HTTP and SOCKS.
+  • 100% test coverage.}
+
+%description %{_description}
+
 
 %package -n python3-%{srcname}
-Summary:        Python3 HTTP library with thread-safe connection pooling and file post
+Summary:        %{summary}
 
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
@@ -49,8 +62,7 @@ Requires:       python3-idna
 Requires:       python3-six >= 1.16.0
 Requires:       python3-pysocks
 
-%description -n python3-%{srcname}
-Python3 HTTP module with connection pooling and file POST abilities.
+%description -n python3-%{srcname} %{_description}
 
 
 %prep
@@ -126,6 +138,7 @@ ln -s %{python3_sitelib}/__pycache__/six.cpython-%{python3_version_nodots}.pyc \
 %changelog
 * Thu May 18 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 1.26.12-5
 - Confirm the License is SPDX MIT
+- Update Summary and description based on upstream
 
 * Tue May 16 2023 Yaakov Selkowitz <yselkowi@redhat.com> - 1.26.12-4
 - Disable tests by default in RHEL builds
