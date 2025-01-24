@@ -6,7 +6,7 @@
 
 Name:           python-urllib3
 Version:        1.26.15
-Release: %{?xsrel}%{?dist}
+Release: %{?xsrel}.1%{?dist}
 Summary:        HTTP library with thread-safe connection pooling, file post, and more
 
 # SPDX
@@ -142,7 +142,7 @@ echo "from setuptools import setup
 setup(name=\"%{name}\",
       version='%{version}',
      )" > ./setup.py
-/usr/bin/python3 -Bs %{SOURCE1} /builddir/build /BUILD/urllib3-%{version}/pyproject-wheeldir
+/usr/bin/python3 -Bs %{SOURCE1} %{_builddir}/urllib3-%{version}/pyproject-wheeldir
 %else
 %pyproject_wheel
 %endif
@@ -150,7 +150,7 @@ setup(name=\"%{name}\",
 
 %install
 %if 0%{?xenserver} < 9
-/usr/bin/python3 -m pip install --root %{buildroot} --prefix /usr --no-deps --disable-pip-version-check --verbose --ignore-installed --no-index --no-cache-dir --find-links /builddir/build/BUILD/urllib3-%{version}/pyproject-wheeldir
+/usr/bin/python3 -m pip install --root %{buildroot} --prefix /usr --no-deps --disable-pip-version-check --verbose --ignore-installed --no-index --no-cache-dir --find-links %{_builddir}/urllib3-%{version}/pyproject-wheeldir
 %else
 %pyproject_install
 
@@ -291,6 +291,9 @@ ignore="${ignore-} --ignore=test/test_no_ssl.py"
 
 
 %changelog
+* Fri Jan 24 2025 Yann Dirson <yann.dirson@vates.tech> - 1.26.15-4.1
+- Fix build invocation using hardcoded (and buggy) paths
+
 * Mon Aug 19 2024 Marcus Granado <marcus.granado@cloud.com> - 1.26.15-4
 - Bump release and rebuild
 
