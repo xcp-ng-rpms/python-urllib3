@@ -1,11 +1,11 @@
-%global package_speccommit da68efd6f3a3bafb066a0dd02596d9986e6750d5
-%global usver 1.26.15
-%global xsver 4
+%global package_speccommit 66ca29bfeb4c78c062541d0da41d15151b4fe134
+%global usver 1.26.20
+%global xsver 3
 %global xsrel %{xsver}%{?xscount}%{?xshash}
 %bcond_with tests
 
 Name:           python-urllib3
-Version:        1.26.15
+Version:        1.26.20
 Release: %{?xsrel}.1%{?dist}
 Summary:        HTTP library with thread-safe connection pooling, file post, and more
 
@@ -253,6 +253,8 @@ ignore="${ignore-} --ignore=test/test_no_ssl.py"
 %{python3_sitelib}/urllib3/packages/backports/__pycache__/__init__.cpython-*.pyc
 %{python3_sitelib}/urllib3/packages/backports/__pycache__/makefile.cpython-*.pyc
 %{python3_sitelib}/urllib3/packages/backports/makefile.py
+%{python3_sitelib}/urllib3/packages/backports/__pycache__/weakref_finalize.cpython-*.pyc
+%{python3_sitelib}/urllib3/packages/backports/weakref_finalize.py
 %{python3_sitelib}/urllib3/packages/six.py
 %{python3_sitelib}/urllib3/poolmanager.py
 %{python3_sitelib}/urllib3/request.py
@@ -291,6 +293,16 @@ ignore="${ignore-} --ignore=test/test_no_ssl.py"
 
 
 %changelog
+* Fri Mar 28 2025 Samuel Verschelde <stormi-xcp@ylix.fr> - 1.26.20-3.1
+- Sync with 1.26.20-3
+- *** Upstream changelog ***
+  * Thu Feb 6 2025 Ming Lu <ming.lu@cloud.com> - 1.26.20-3
+  - Bump release for rebuild
+  * Sun Jan 26 2025 Marcus Granado <marcus.granado@cloud.com> - 1.26.20-2
+  - Update for version 1.26.20 and bump release for rebuild
+  * Thu Jan 16 2025 XenServer Rebuild <rebuild@xenserver.com> - 1.26.15-5
+  - CP-53241: XenServer 9 rebuild
+
 * Fri Jan 24 2025 Yann Dirson <yann.dirson@vates.tech> - 1.26.15-4.1
 - Fix build invocation using hardcoded (and buggy) paths
 
