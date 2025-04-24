@@ -12,8 +12,7 @@ Summary:        HTTP library with thread-safe connection pooling, file post, and
 # SPDX
 License:        MIT
 URL:            https://github.com/urllib3/urllib3
-Source0: urllib3-1.26.15.tar.gz
-Patch0: 4855d71.patch
+Source0: urllib3-1.26.20.tar.gz
 
 Source1: pyproject_wheel.py
 
